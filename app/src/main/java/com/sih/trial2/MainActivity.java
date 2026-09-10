@@ -21,14 +21,24 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.content.Intent;
+import android.net.Uri;
 
+
+public class MainActivity extends AppCompatActivity
+       {
     private LocationHelper locationHelper;
     private TextView locationText;
     private TextView safePlacesText;
     private TextView volunteersText;
     private Button refreshButton;
+    private Volunteer nearestVolunteer;
+
 
     private final List<SafePlace> safePlaces = new ArrayList<>();
     private final List<Volunteer> volunteers = new ArrayList<>();
@@ -36,8 +46,94 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         EdgeToEdge.enable(this);
+
         setContentView(R.layout.activity_main);
+        WebView rescueMapWebView = findViewById(R.id.rescueMapWebView);
+
+        WebSettings webSettings = rescueMapWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
+
+        rescueMapWebView.addJavascriptInterface(new Object() {
+
+            @android.webkit.JavascriptInterface
+            public void callVolunteer(String phone) {
+                runOnUiThread(() -> {
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + phone));
+                    startActivity(intent);
+                });
+            }
+
+            @android.webkit.JavascriptInterface
+            public void navigateTo(String latitude, String longitude) {
+                runOnUiThread(() -> {
+                    String url = "https://www.google.com/maps/dir/?api=1&destination="
+                            + latitude + "," + longitude;
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
+                    startActivity(intent);
+                });
+            }
+
+            @android.webkit.JavascriptInterface
+            public void centerMap() {
+                runOnUiThread(() -> {
+                    // Tell the HTML map to center itself on the user's location
+                    rescueMapWebView.evaluateJavascript(
+                            "centerMapFromAndroid();",
+                            null
+                    );
+                });
+            }
+
+        }, "Android");
+
+        rescueMapWebView.setWebViewClient(new WebViewClient());
+
+        rescueMapWebView.loadUrl("file:///android_asset/rescue_map.html");
+
+        rescueMapWebView.loadUrl("file:///android_asset/rescue_map.html");
+
+        rescueMapWebView.setWebViewClient(new WebViewClient());
+
+        rescueMapWebView.loadUrl("file:///android_asset/rescue_map.html");
+        try {
+            java.io.InputStream inputStream =
+                    getAssets().open("rescue_map.html");
+
+            java.io.ByteArrayOutputStream outputStream =
+                    new java.io.ByteArrayOutputStream();
+
+            byte[] buffer = new byte[1024];
+            int length;
+
+            while ((length = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, length);
+            }
+
+            inputStream.close();
+
+            String html = outputStream.toString("UTF-8");
+
+            rescueMapWebView.loadDataWithBaseURL(
+                    "https://example.com/",
+                    html,
+                    "text/html",
+                    "UTF-8",
+                    null
+            );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -48,12 +144,57 @@ public class MainActivity extends AppCompatActivity {
         locationText = findViewById(R.id.locationText);
         safePlacesText = findViewById(R.id.safePlacesText);
         volunteersText = findViewById(R.id.volunteersText);
+        volunteersText.setOnClickListener(v -> {
+
+            if (nearestVolunteer == null) {
+                Toast.makeText(this,
+                        "No available volunteers nearby.",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle(nearestVolunteer.getName())
+                    .setMessage(
+                            "Distance: " +
+                                    formatDistance(nearestVolunteer.getDistanceKm()) +
+                                    "\nStatus: Available"
+                    )
+                    .setPositiveButton("Call", (dialog, which) -> {
+
+                        Intent intent = new Intent(
+                                Intent.ACTION_DIAL,
+                                Uri.parse("tel:" + nearestVolunteer.getPhoneNumber())
+                        );
+
+                        startActivity(intent);
+                    })
+                    .setNegativeButton("Location", (dialog, which) -> {
+
+                        openNavigation(
+                                nearestVolunteer.getLatitude(),
+                                nearestVolunteer.getLongitude()
+                        );
+                    })
+                    .setNeutralButton("Cancel", null)
+                    .show();
+        });
         refreshButton = findViewById(R.id.refreshButton);
 
         locationHelper = new LocationHelper(this);
         loadDummyData();
 
         refreshButton.setOnClickListener(v -> getUserLocation());
+        safePlacesText.setOnClickListener(v -> {
+            if (!safePlaces.isEmpty()) {
+                SafePlace nearest = safePlaces.get(0);
+
+                openNavigation(
+                        nearest.getLatitude(),
+                        nearest.getLongitude()
+                );
+            }
+        });
 
         if (locationHelper.hasLocationPermission()) {
             getUserLocation();
@@ -69,10 +210,29 @@ public class MainActivity extends AppCompatActivity {
         safePlaces.add(new SafePlace("Shelter B", 12.9352, 77.6245));
         safePlaces.add(new SafePlace("Shelter C", 12.9980, 77.5800));
 
-        volunteers.clear();
-        volunteers.add(new Volunteer("Volunteer A", 12.9725, 77.5920, true));
-        volunteers.add(new Volunteer("Volunteer B", 12.9400, 77.6100, true));
-        volunteers.add(new Volunteer("Volunteer C", 12.9800, 77.6500, false));
+        volunteers.add(new Volunteer(
+                "Volunteer A",
+                12.9500,
+                77.5800,
+                true,
+                "9876543210"
+        ));
+
+        volunteers.add(new Volunteer(
+                "Volunteer B",
+                12.9400,
+                77.6000,
+                true,
+                "9123456780"
+        ));
+
+        volunteers.add(new Volunteer(
+                "Volunteer C",
+                12.9800,
+                77.5600,
+                false,
+                "9988776655"
+        ));
     }
 
     private void getUserLocation() {
@@ -169,6 +329,11 @@ public class MainActivity extends AppCompatActivity {
 
         Collections.sort(availableVolunteers,
                 Comparator.comparingDouble(Volunteer::getDistanceKm));
+        if (!availableVolunteers.isEmpty()) {
+            nearestVolunteer = availableVolunteers.get(0);
+        } else {
+            nearestVolunteer = null;
+        }
 
         StringBuilder output = new StringBuilder();
         if (availableVolunteers.isEmpty()) {
@@ -183,7 +348,15 @@ public class MainActivity extends AppCompatActivity {
                         .append(formatDistance(volunteer.getDistanceKm()))
                         .append(" - Available\n");
             }
-        }
+        }output.append("\n\nUNAVAILABLE VOLUNTEERS\n");
+
+            for (Volunteer volunteer : volunteers) {
+                if (!volunteer.isAvailable()) {
+                    output.append("• ")
+                            .append(volunteer.getName())
+                            .append(" - Unavailable\n");
+                }
+            }
         volunteersText.setText(output.toString().trim());
     }
 
@@ -197,18 +370,13 @@ public class MainActivity extends AppCompatActivity {
     // Optional: opens Google Maps for a selected destination.
     // Example usage later: openNavigation(place.getLatitude(), place.getLongitude());
     private void openNavigation(double latitude, double longitude) {
-        Uri uri = Uri.parse("google.navigation:q=" + latitude + "," + longitude);
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        intent.setPackage("com.google.android.apps.maps");
 
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        } else {
-            // Fallback if Google Maps is not installed.
-            Uri webUri = Uri.parse("https://www.google.com/maps/dir/?api=1&destination="
-                    + latitude + "," + longitude);
-            startActivity(new Intent(Intent.ACTION_VIEW, webUri));
-        }
+        String url = "https://www.google.com/maps/dir/?api=1&destination="
+                + latitude + "," + longitude;
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
+        startActivity(intent);
     }
 
     @Override
@@ -236,4 +404,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 }
+
