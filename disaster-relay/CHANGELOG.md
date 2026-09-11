@@ -1,5 +1,57 @@
 # Changelog — disaster-relay
 
+## 2026-09-11 — Android client connected to the shared backend
+
+### Added
+
+- **`MyApplication/`** — The Android app now reads and writes the same `/api/emergency` store the responder dashboard uses, so both clients work simultaneously off one source of truth:
+  - `ApiClient.java` — minimal HTTP+JSON client for `GET/POST /api/emergency` and `PATCH /:id/status` (base URL `http://10.0.2.2:3000/api/emergency`, i.e. host loopback from the emulator).
+  - `MapActivity.java` — WebView wrapper for the existing `assets/rescue_map.html`; polls the backend every 7 s and pushes live incidents through the documented `window.loadEmergencies(...)` bridge (the HTML file itself is unchanged).
+  - `MainActivity.java` — SOS now POSTs a real incident (last known GPS position when permitted; zeros + a notice when not) before opening the alert screen; home status card reflects live backend state; new Rescue Map card opens `MapActivity`.
+  - `EmergencyActivity.java` — binds the newest incident (status, derived confidence, nearby devices, coordinates, age) and polls every 7 s, so dashboard actions (acknowledge/responding/resolved) appear on the phone within one poll cycle.
+  - Manifest: `INTERNET`/`ACCESS_FINE_LOCATION` permissions, cleartext enabled for the dev backend, `MapActivity` registered.
+
+### Notes
+
+- Dashboard ↔ phone sync cadence is bounded by each client's 7 s poll; no backend changes were required.
+- For a physical device, point `ApiClient.BASE_URL` at the dev machine's LAN IP instead of `10.0.2.2`.
+
+---
+
+## 2026-09-10 — Dashboard v2: responder operations redesign
+
+### Changed
+
+- **`emergency-dashboard/`** — Full rebuild of the frontend per `emergency-response-design-brief.md`:
+  - Dark emergency-operations design system (`src/styles/tokens.css`): brief palette (#090A0C bg), Inter + JetBrains Mono (mono for IDs/coords/timestamps), lucide-react icons instead of emoji.
+  - Router architecture: react-router-dom with `AppShell` (collapsible `Sidebar`, ops `Header` with SYSTEM ONLINE/OFFLINE pill, last-sync time, responder identity, live clock) and pages: Overview, Active Incidents, Incident Detail, Rescue Map, Detection History, People (honest placeholder), Settings.
+  - `EmergencyDataContext` — single source of incident data: 7s polling with stale-response guard, connection tracking, toasts via `ToastContext` bridge.
+  - `EvidencePanel` — "WHY THIS ALERT?" explainability derived only from real backend fields; `SeverityChip` is derived (HIGH/ELEVATED/ACTIVE/CLOSED), never fabricated.
+  - `IncidentDetail` — dedicated operational view: facts grid, evidence, focused map, workflow action.
+  - `RescueMap` — CartoDB dark basemap (no API key), status-colored pulsing emergency markers, relay-device + responder markers explicitly labeled "SIMULATED" in popups, legend.
+  - Incident selection ↔ map focus sync; status filters; history table; ALL CLEAR empty state; SYSTEM OFFLINE banner with RETRY; skeleton loading.
+  - Demo data (`src/mocks/demoEmergencies.ts`) shown ONLY when backend is unreachable and no real data exists, always labeled "DEMO DATA"; disable with `VITE_ENABLE_MOCK_DATA=false`.
+  - Backend contract untouched; unknown API fields (e.g. stray `confidence` in test docs) are ignored.
+
+---
+
+## 2026-09-10 — Emergency response dashboard frontend
+
+### Added
+
+- **`emergency-dashboard/`** — New React + TypeScript + Vite frontend (at repo root) that consumes the existing backend API. Built from the `emergency-dashboard-agent.md` spec:
+  - `src/types/emergency.ts` — `Emergency` model, `EmergencyStatus` union, and workflow helpers (`NEXT_STATUS`, `ACTION_LABEL`) enforcing `NEW → ACKNOWLEDGED → RESPONDING → RESOLVED`.
+  - `src/api/emergencyApi.ts` — API service layer (`getEmergencies`, `updateEmergencyStatus`) using `VITE_API_URL` from `.env.local` (no hard-coded URLs in components).
+  - `src/components/` — `StatusBadge` (glyph + text, never color alone), `EmergencyCard` (all required fields, next-action button, OpenStreetMap link), `EmergencyList` (skeleton loading + empty states), `SummaryCards` (counts derived from fetched data), `EmergencyMap` (Leaflet + OpenStreetMap, status-colored markers, popups, auto-fit/fly-to), `ErrorBoundary` (dashboard survives map failure).
+  - `src/App.tsx` — Header with connection status/clock/refresh, summary row, split list+map layout, 7s polling with cleanup and stale-response guard, toasts for update success/failure, error banner when backend is unreachable.
+  - Dark operations theme, responsive down to mobile (map stacks below list), keyboard-accessible controls, semantic HTML.
+
+### Fixed
+
+- Reinstalled backend `node_modules` — the previous install carried a Windows esbuild binary (`@esbuild/win32-x64`), which crashed `tsx` on macOS.
+
+---
+
 ## 2026-09-10 — Emergency reporting backend
 
 ### Added
