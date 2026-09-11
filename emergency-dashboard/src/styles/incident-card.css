@@ -1,0 +1,148 @@
+.incident-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 0.85rem 0.95rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.incident-card--selected {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 1px var(--blue);
+}
+
+.incident-card--resolved {
+  opacity: 0.65;
+}
+
+.incident-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.incident-card__id {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.incident-card__body {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  width: 100%;
+}
+
+.incident-card__metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.metric__label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.metric__value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.incident-card__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.incident-card__view {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-2);
+  text-decoration: none;
+}
+
+.incident-card__view:hover {
+  color: var(--blue);
+}
+
+.incident-card__done {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+/* Skeleton */
+.skeleton {
+  pointer-events: none;
+}
+
+.skeleton-line,
+.skeleton-btn {
+  height: 0.85rem;
+  border-radius: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--border) 25%,
+    var(--border-strong) 50%,
+    var(--border) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton-line--w60 {
+  width: 60%;
+}
+
+.skeleton-line--w90 {
+  width: 90%;
+}
+
+.skeleton-line--w40 {
+  width: 40%;
+}
+
+.skeleton-btn {
+  width: 38%;
+  height: 2rem;
+  margin-left: auto;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

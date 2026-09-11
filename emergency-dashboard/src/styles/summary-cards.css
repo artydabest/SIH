@@ -1,0 +1,71 @@
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.summary-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem 0.95rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  border-left: 3px solid var(--border-strong);
+}
+
+.summary-card__value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.summary-card__label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.summary-card--danger {
+  border-left-color: var(--red);
+}
+
+.summary-card--danger .summary-card__value {
+  color: var(--red);
+}
+
+.summary-card--warning {
+  border-left-color: var(--orange);
+}
+
+.summary-card--warning .summary-card__value {
+  color: var(--orange);
+}
+
+.summary-card--info {
+  border-left-color: var(--blue);
+}
+
+.summary-card--info .summary-card__value {
+  color: var(--blue);
+}
+
+.summary-card--success {
+  border-left-color: var(--green);
+}
+
+.summary-card--success .summary-card__value {
+  color: var(--green);
+}
+
+.summary-card--loading {
+  opacity: 0.55;
+}
+
+@media (max-width: 900px) {
+  .summary-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

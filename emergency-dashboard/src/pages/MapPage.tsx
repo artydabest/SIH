@@ -1,0 +1,60 @@
+import { useState } from "react";
+import { useEmergencyData } from "../context/EmergencyDataContext";
+import RescueMap from "../components/RescueMap";
+import IncidentCard from "../components/IncidentCard";
+import { useNow } from "../hooks/useNow";
+import "../styles/page.css";
+
+export default function MapPage() {
+  const { emergencies, loading, updatingId, updateStatus, dataSource } =
+    useEmergencyData();
+  const now = useNow(1000);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const active = emergencies.filter((e) => e.status !== "RESOLVED");
+
+  return (
+    <div className="page">
+      <div className="page__heading">
+        <h2>Rescue Map</h2>
+        <p className="page__sub">
+          Emergency locations with nearby relay devices and responder position
+        </p>
+      </div>
+
+      <div className="map-page-grid">
+        <section className="panel panel--map panel--tall" aria-label="Rescue map">
+          <RescueMap
+            emergencies={emergencies}
+            selectedId={selectedId}
+            onSelect={(emergency) => setSelectedId(emergency._id)}
+          />
+        </section>
+
+        <aside className="map-page-side">
+          <h3 className="panel__title">EMERGENCIES</h3>
+          {loading ? (
+            <p className="muted">Loading incidents…</p>
+          ) : active.length === 0 ? (
+            <p className="muted">No active incidents to display.</p>
+          ) : (
+            active.map((emergency) => (
+              <IncidentCard
+                key={emergency._id}
+                emergency={emergency}
+                now={now.getTime()}
+                updatingId={updatingId}
+                onStatusUpdate={(id, nextStatus) => void updateStatus(id, nextStatus)}
+                onSelect={(emergency) => setSelectedId(emergency._id)}
+                selected={selectedId === emergency._id}
+              />
+            ))
+          )}
+          {dataSource === "demo" && (
+            <p className="demo-note">DEMO DATA — backend unreachable.</p>
+          )}
+        </aside>
+      </div>
+    </div>
+  );
+}

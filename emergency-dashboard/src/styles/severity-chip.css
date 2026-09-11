@@ -1,0 +1,22 @@
+.severity-chip {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.severity-chip--high {
+  color: var(--red);
+}
+
+.severity-chip--elevated {
+  color: var(--orange);
+}
+
+.severity-chip--active {
+  color: var(--blue);
+}
+
+.severity-chip--closed {
+  color: var(--muted);
+}
