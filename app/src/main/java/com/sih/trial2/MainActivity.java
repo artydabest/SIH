@@ -62,34 +62,9 @@ public class MainActivity extends AppCompatActivity
 
             @android.webkit.JavascriptInterface
             public void callVolunteer(String phone) {
-                runOnUiThread(() -> {
-                    Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse("tel:" + phone));
-                    startActivity(intent);
-                });
-            }
-
-            @android.webkit.JavascriptInterface
-            public void navigateTo(String latitude, String longitude) {
-                runOnUiThread(() -> {
-                    String url = "https://www.google.com/maps/dir/?api=1&destination="
-                            + latitude + "," + longitude;
-
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(url));
-                    startActivity(intent);
-                });
-            }
-
-            @android.webkit.JavascriptInterface
-            public void centerMap() {
-                runOnUiThread(() -> {
-                    // Tell the HTML map to center itself on the user's location
-                    rescueMapWebView.evaluateJavascript(
-                            "centerMapFromAndroid();",
-                            null
-                    );
-                });
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + phone));
+                startActivity(intent);
             }
 
         }, "Android");
@@ -97,41 +72,6 @@ public class MainActivity extends AppCompatActivity
         rescueMapWebView.setWebViewClient(new WebViewClient());
 
         rescueMapWebView.loadUrl("file:///android_asset/rescue_map.html");
-
-        rescueMapWebView.loadUrl("file:///android_asset/rescue_map.html");
-
-        rescueMapWebView.setWebViewClient(new WebViewClient());
-
-        rescueMapWebView.loadUrl("file:///android_asset/rescue_map.html");
-        try {
-            java.io.InputStream inputStream =
-                    getAssets().open("rescue_map.html");
-
-            java.io.ByteArrayOutputStream outputStream =
-                    new java.io.ByteArrayOutputStream();
-
-            byte[] buffer = new byte[1024];
-            int length;
-
-            while ((length = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, length);
-            }
-
-            inputStream.close();
-
-            String html = outputStream.toString("UTF-8");
-
-            rescueMapWebView.loadDataWithBaseURL(
-                    "https://example.com/",
-                    html,
-                    "text/html",
-                    "UTF-8",
-                    null
-            );
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
 
 
