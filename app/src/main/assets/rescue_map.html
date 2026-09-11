@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Offline Rescue Map</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Arial,sans-serif;background:#101216;color:#f5f5f5;overflow:hidden}
+#map{position:relative;width:100%;height:100%;background:#1b1e24;overflow:hidden;touch-action:none}
+#grid{position:absolute;inset:-20%;background:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:42px 42px}
+.road{position:absolute;height:5px;background:#343943;border-radius:5px;transform-origin:left center;opacity:.85}
+.label{position:absolute;font-size:11px;color:#8e96a3;white-space:nowrap}
+.marker{position:absolute;width:30px;height:30px;border-radius:50%;border:3px solid white;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;box-shadow:0 2px 10px #000;z-index:5}
+.user{background:#3478f6}.shelter{background:#30a46c}.volunteer{background:#9b59f6}.offline{background:#555b66}
+#top{position:absolute;top:10px;left:10px;right:10px;z-index:10;background:rgba(10,11,14,.88);padding:10px 12px;border-radius:10px;border:1px solid #30343c}
+#top b{font-size:14px}.small{font-size:11px;color:#aeb4bd;margin-top:3px}
+#panel{position:absolute;left:10px;right:10px;bottom:10px;z-index:20;background:#17191e;border:1px solid #383c44;border-radius:12px;padding:12px;display:none}
+#panel b{font-size:15px}.row{margin-top:5px;color:#bfc4cc;font-size:12px}
+button{margin-top:9px;margin-right:6px;padding:9px 12px;border:0;border-radius:8px;background:#7352b5;color:white;font-weight:bold}
+.legend{position:absolute;right:10px;top:78px;z-index:10;background:rgba(10,11,14,.82);padding:8px;border-radius:8px;font-size:10px;line-height:19px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.note{position:absolute;bottom:8px;left:10px;color:#7f8793;font-size:9px;z-index:8}
+</style>
+</head>
+<body>
+<div id="map">
+<div id="grid"></div>
+<div id="top"><b>OFFLINE RESCUE MAP</b><div class="small">No internet required • tap a shelter or volunteer</div></div>
+<div class="legend">
+<div><i class="dot" style="background:#3478f6"></i>You</div>
+<div><i class="dot" style="background:#30a46c"></i>Safe place</div>
+<div><i class="dot" style="background:#9b59f6"></i>Volunteer</div>
+</div>
+<div class="road" style="left:5%;top:45%;width:90%;transform:rotate(-8deg)"></div>
+<div class="road" style="left:10%;top:70%;width:85%;transform:rotate(12deg)"></div>
+<div class="road" style="left:46%;top:10%;width:70%;transform:rotate(82deg)"></div>
+<div class="road" style="left:18%;top:20%;width:72%;transform:rotate(28deg)"></div>
+<div class="label" style="left:9%;top:39%">Rescue area</div>
+<div class="label" style="left:63%;top:29%">Shelter zone</div>
+<div id="markers"></div>
+<div class="note">Schematic offline view • app test coordinates</div>
+<div id="panel"></div>
+</div>
+<script>
+var places=[
+{name:"Shelter A",lat:12.9700,lon:77.5800,type:"shelter",info:"Safe place"},
+{name:"Shelter C",lat:12.9800,lon:77.6000,type:"shelter",info:"Safe place"},
+{name:"Shelter B",lat:13.0100,lon:77.5800,type:"shelter",info:"Safe place"},
+{name:"Volunteer A",lat:12.9500,lon:77.5800,type:"volunteer",info:"Available",phone:"9876543210"},
+{name:"Volunteer B",lat:12.9400,lon:77.6000,type:"volunteer",info:"Available",phone:"9123456780"},
+{name:"Volunteer C",lat:12.9800,lon:77.5600,type:"volunteer",info:"Unavailable",phone:"9988776655"}
+];
+var user={lat:12.962895,lon:77.577538};
+var bounds={minLat:12.93,maxLat:13.02,minLon:77.55,maxLon:77.62};
+function xy(lat,lon){return{x:(lon-bounds.minLon)/(bounds.maxLon-bounds.minLon)*100,y:(bounds.maxLat-lat)/(bounds.maxLat-bounds.minLat)*100}}
+function addMarker(p){
+ var q=xy(p.lat,p.lon),el=document.createElement("button");
+ el.className="marker "+p.type+(p.info==="Unavailable"?" offline":"");
+ el.style.left=q.x+"%";el.style.top=q.y+"%";el.textContent=p.type==="shelter"?"S":"V";el.title=p.name;
+ el.onclick=function(e){e.stopPropagation();show(p)};document.getElementById("markers").appendChild(el);
+}
+function show(p){
+ var d=distance(user.lat,user.lon,p.lat,p.lon),panel=document.getElementById("panel"),buttons="";
+ if(p.type==="shelter")buttons='<button onclick="focusPlace('+p.lat+','+p.lon+')">Center on shelter</button>';
+ else if(p.info==="Available")buttons='<button onclick="callVolunteer(\''+p.phone+'\')">Call</button><button onclick="focusPlace('+p.lat+','+p.lon+')">Center on volunteer</button>';
+ panel.innerHTML="<b>"+p.name+"</b><div class=row>"+p.info+"</div><div class=row>Distance: "+d.toFixed(2)+" km</div>"+buttons;panel.style.display="block";
+}
+function distance(a,b,c,d){var R=6371,r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.sin(x/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)**2;return R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h))}
+function focusPlace(lat,lon){var q=xy(lat,lon);document.getElementById("grid").style.transform="scale(1.7) translate("+(50-q.x)/2+"%,"+(50-q.y)/2+"%)"}
+function callVolunteer(phone){window.location.href="tel:"+phone}
+var q=xy(user.lat,user.lon),u=document.createElement("div");u.className="marker user";u.style.left=q.x+"%";u.style.top=q.y+"%";u.textContent="U";u.onclick=function(){show({name:"Your location",lat:user.lat,lon:user.lon,type:"user",info:"Current GPS location"})};document.getElementById("markers").appendChild(u);
+places.forEach(addMarker);
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+Index: app/src/main/java/com/sih/myapplication/SafePlacesActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.sih.myapplication;\n\nimport android.content.Context;\nimport android.content.Intent;\nimport android.net.Uri;\nimport android.os.Bundle;\nimport android.view.LayoutInflater;\nimport android.view.View;\nimport android.view.ViewGroup;\nimport android.widget.Button;\nimport android.widget.TextView;\nimport android.widget.Toast;\nimport androidx.annotation.NonNull;\nimport androidx.appcompat.app.AppCompatActivity;\nimport androidx.recyclerview.widget.LinearLayoutManager;\nimport androidx.recyclerview.widget.RecyclerView;\nimport java.util.ArrayList;\nimport java.util.List;\n\npublic class SafePlacesActivity extends AppCompatActivity {\n\n    private Button btnBack;\n    private TextView tvCountBadge;\n    private RecyclerView rvSafePlaces;\n    private SafePlaceAdapter adapter;\n    private List<SafePlace> safePlaceList;\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        setContentView(R.layout.activity_safe_places);\n\n        initViews();\n        loadDummySafePlaces();\n        setupRecyclerView();\n    }\n\n    private void initViews() {\n        btnBack = findViewById(R.id.btnBack);\n        tvCountBadge = findViewById(R.id.tvCountBadge);\n        rvSafePlaces = findViewById(R.id.rvSafePlaces);\n\n        btnBack.setOnClickListener(new View.OnClickListener() {\n            @Override\n            public void onClick(View v) {\n                finish();\n            }\n        });\n    }\n\n    private void loadDummySafePlaces() {\n        safePlaceList = new ArrayList<>();\n        safePlaceList.add(new SafePlace(\n                \"Community Shelter & Relief Base\",\n                \"14th Main Rd, Sector 4, Indiranagar\",\n                \"650 m\",\n                \"Govt. Approved Relief Shelter\",\n                \"Open • Medical kit & power backup available\",\n                12.9719, 77.6412\n        ));\n        safePlaceList.add(new SafePlace(\n                \"City Stadium Safe Zone\",\n                \"Gate 3, Brigade Road Complex\",\n                \"1.2 km\",\n                \"Emergency Evacuation Zone\",\n                \"Open • Capacity 1500+ • Water & food packets\",\n                12.9780, 77.6080\n        ));\n        safePlaceList.add(new SafePlace(\n                \"St. Mary High School Hall\",\n                \"8th Cross, Austin Town\",\n                \"2.1 km\",\n                \"Secondary Shelter\",\n                \"Standby • Volunteer team stationed\",\n                12.9600, 77.6150\n        ));\n\n        tvCountBadge.setText(safePlaceList.size() + \" Nearby\");\n    }\n\n    private void setupRecyclerView() {\n        adapter = new SafePlaceAdapter(this, safePlaceList);\n        rvSafePlaces.setLayoutManager(new LinearLayoutManager(this));\n        rvSafePlaces.setAdapter(adapter);\n    }\n\n    // --- Data Model Class ---\n    public static class SafePlace {\n        private String name, address, distance, type, status;\n        private double latitude, longitude;\n\n        public SafePlace(String name, String address, String distance, String type, String status, double lat, double lon) {\n            this.name = name;\n            this.address = address;\n            this.distance = distance;\n            this.type = type;\n            this.status = status;\n            this.latitude = lat;\n            this.longitude = lon;\n        }\n\n        public String getName() { return name; }\n        public String getAddress() { return address; }\n        public String getDistance() { return distance; }\n        public String getType() { return type; }\n        public String getStatus() { return status; }\n        public double getLatitude() { return latitude; }\n        public double getLongitude() { return longitude; }\n    }\n\n    // --- RecyclerView Adapter ---\n    public static class SafePlaceAdapter extends RecyclerView.Adapter<SafePlaceAdapter.ViewHolder> {\n        private final Context context;\n        private final List<SafePlace> placeList;\n\n        public SafePlaceAdapter(Context context, List<SafePlace> placeList) {\n            this.context = context;\n            this.placeList = placeList;\n        }\n\n        @NonNull\n        @Override\n        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {\n            View view = LayoutInflater.from(context).inflate(R.layout.item_safe_place, parent, false);\n            return new ViewHolder(view);\n        }\n\n        @Override\n        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {\n            SafePlace place = placeList.get(position);\n            holder.tvPlaceName.setText(place.getName());\n            holder.tvPlaceType.setText(place.getType());\n            holder.tvPlaceDistance.setText(place.getDistance());\n            holder.tvPlaceAddress.setText(\"\uD83D\uDCCD \" + place.getAddress());\n            holder.tvPlaceStatus.setText(\"● \" + place.getStatus());\n\n            holder.btnNavigate.setOnClickListener(new View.OnClickListener() {\n                @Override\n                public void onClick(View v) {\n                    Uri gmmIntentUri = Uri.parse(\"google.navigation:q=\" + place.getLatitude() + \",\" + place.getLongitude());\n                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);\n                    mapIntent.setPackage(\"com.google.android.apps.maps\");\n\n                    if (mapIntent.resolveActivity(context.getPackageManager()) != null) {\n                        context.startActivity(mapIntent);\n                    } else {\n                        Toast.makeText(context, \"Navigating to: \" + place.getName() + \" (\" + place.getDistance() + \")\", Toast.LENGTH_LONG).show();\n                    }\n                }\n            });\n        }\n\n        @Override\n        public int getItemCount() {\n            return placeList.size();\n        }\n\n        public static class ViewHolder extends RecyclerView.ViewHolder {\n            TextView tvPlaceName, tvPlaceType, tvPlaceDistance, tvPlaceAddress, tvPlaceStatus;\n            Button btnNavigate;\n\n            public ViewHolder(@NonNull View itemView) {\n                super(itemView);\n                tvPlaceName = itemView.findViewById(R.id.tvPlaceName);\n                tvPlaceType = itemView.findViewById(R.id.tvPlaceType);\n                tvPlaceDistance = itemView.findViewById(R.id.tvPlaceDistance);\n                tvPlaceAddress = itemView.findViewById(R.id.tvPlaceAddress);\n                tvPlaceStatus = itemView.findViewById(R.id.tvPlaceStatus);\n                btnNavigate = itemView.findViewById(R.id.btnNavigate);\n            }\n        }\n    }\n}
+===================================================================
+diff --git a/app/src/main/java/com/sih/myapplication/SafePlacesActivity.java b/app/src/main/java/com/sih/myapplication/SafePlacesActivity.java
+--- a/app/src/main/java/com/sih/myapplication/SafePlacesActivity.java	(revision ee1a900dd5c2a0ffa060d13a6446ae03086c8264)
++++ b/app/src/main/java/com/sih/myapplication/SafePlacesActivity.java	(date 1789105878970)
+@@ -1,5 +1,6 @@
+ package com.sih.myapplication;
+ 
++import android.content.ActivityNotFoundException;
+ import android.content.Context;
+ import android.content.Intent;
+ import android.net.Uri;
+@@ -141,10 +142,10 @@
+                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                     mapIntent.setPackage("com.google.android.apps.maps");
+ 
+-                    if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
++                    try {
+                         context.startActivity(mapIntent);
+-                    } else {
+-                        Toast.makeText(context, "Navigating to: " + place.getName() + " (" + place.getDistance() + ")", Toast.LENGTH_LONG).show();
++                    } catch (ActivityNotFoundException e) {
++                        Toast.makeText(context, "Google Maps not found. Navigating to: " + place.getName(), Toast.LENGTH_LONG).show();
+                     }
+                 }
+             });
+Index: app/src/main/java/com/sih/myapplication/MapActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.sih.myapplication;\n\nimport android.os.Bundle;\nimport android.view.View;\nimport android.webkit.GeolocationPermissions;\nimport android.webkit.WebChromeClient;\nimport android.webkit.WebSettings;\nimport android.webkit.WebView;\nimport android.webkit.WebViewClient;\nimport android.widget.Button;\nimport androidx.appcompat.app.AppCompatActivity;\n\npublic class MapActivity extends AppCompatActivity {\n\n    private WebView mapWebView;\n    private Button btnZoomIn;\n    private Button btnZoomOut;\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        setContentView(R.layout.activity_map);\n\n        mapWebView = findViewById(R.id.mapWebView);\n        btnZoomIn = findViewById(R.id.btnZoomIn);\n        btnZoomOut = findViewById(R.id.btnZoomOut);\n\n        if (mapWebView != null) {\n            WebSettings webSettings = mapWebView.getSettings();\n            webSettings.setJavaScriptEnabled(true);\n            webSettings.setDomStorageEnabled(true);\n            webSettings.setAllowFileAccess(true);\n            webSettings.setAllowContentAccess(true);\n            webSettings.setAllowFileAccessFromFileURLs(true);\n            webSettings.setAllowUniversalAccessFromFileURLs(true);\n\n            mapWebView.setWebViewClient(new WebViewClient());\n            mapWebView.setWebChromeClient(new WebChromeClient() {\n                @Override\n                public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {\n                    callback.invoke(origin, true, false);\n                }\n            });\n\n            mapWebView.loadUrl(\"file:///android_asset/rescue_map.html\");\n        }\n\n        // --- BUTTON ACTIONS: Injecting interactive script controls into the web engine ---\n        if (btnZoomIn != null) {\n            btnZoomIn.setOnClickListener(new View.OnClickListener() {\n                @Override\n                public void onClick(View v) {\n                    // Triggers the web map to zoom in natively\n                    mapWebView.evaluateJavascript(\"if(typeof map !== 'undefined') { map.zoomIn(); } else { window.scrollBy(0, -200); }\", null);\n                }\n            });\n        }\n\n        if (btnZoomOut != null) {\n            btnZoomOut.setOnClickListener(new View.OnClickListener() {\n                @Override\n                public void onClick(View v) {\n                    // Triggers the web map to zoom out natively\n                    mapWebView.evaluateJavascript(\"if(typeof map !== 'undefined') { map.zoomOut(); } else { window.scrollBy(0, 200); }\", null);\n                }\n            });\n        }\n    }\n}\n
+===================================================================
+diff --git a/app/src/main/java/com/sih/myapplication/MapActivity.java b/app/src/main/java/com/sih/myapplication/MapActivity.java
+--- a/app/src/main/java/com/sih/myapplication/MapActivity.java	(revision ee1a900dd5c2a0ffa060d13a6446ae03086c8264)
++++ b/app/src/main/java/com/sih/myapplication/MapActivity.java	(date 1789105878973)
+@@ -1,5 +1,7 @@
+ package com.sih.myapplication;
+ 
++import android.content.Intent;
++import android.net.Uri;
+ import android.os.Bundle;
+ import android.view.View;
+ import android.webkit.GeolocationPermissions;
+@@ -34,7 +36,17 @@
+             webSettings.setAllowFileAccessFromFileURLs(true);
+             webSettings.setAllowUniversalAccessFromFileURLs(true);
+ 
+-            mapWebView.setWebViewClient(new WebViewClient());
++            mapWebView.setWebViewClient(new WebViewClient() {
++                @Override
++                public boolean shouldOverrideUrlLoading(WebView view, String url) {
++                    if (url.startsWith("tel:")) {
++                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(url));
++                        startActivity(intent);
++                        return true;
++                    }
++                    return false;
++                }
++            });
+             mapWebView.setWebChromeClient(new WebChromeClient() {
+                 @Override
+                 public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:tools=\"http://android.com\">\n\n    <application\n        android:allowBackup=\"true\"\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\n        android:fullBackupContent=\"@xml/backup_rules\"\n        android:icon=\"@mipmap/ic_launcher\"\n        android:label=\"@string/app_name\"\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\n        android:supportsRtl=\"true\"\n        android:theme=\"@style/Theme.MyApplication\"\n        tools:replace=\"android:theme\"\n        tools:targetApi=\"35\">\n\n        <!-- \uD83C\uDFE0 Home Dashboard is set as the starting launcher screen -->\n        <activity\n            android:name=\"com.sih.myapplication.MainActivity\"\n            android:exported=\"true\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.MAIN\" />\n                <category android:name=\"android.intent.category.LAUNCHER\" />\n            </intent-filter>\n        </activity>\n\n        <!-- \uD83D\uDDFA\uFE0F Interactive Map Screen definition -->\n        <activity\n            android:name=\"com.sih.myapplication.MapActivity\"\n            android:screenOrientation=\"portrait\"\n            android:exported=\"false\" />\n\n        <!-- Remaining Functional App Screens -->\n        <activity\n            android:name=\"com.sih.myapplication.EmergencyActivity\"\n            android:exported=\"false\" />\n\n        <activity\n            android:name=\"com.sih.myapplication.SafePlacesActivity\"\n            android:exported=\"false\" />\n\n        <activity\n            android:name=\"com.sih.myapplication.StatusActivity\"\n            android:exported=\"false\" />\n\n        <activity\n            android:name=\"com.sih.myapplication.VolunteersActivity\"\n            android:exported=\"false\" />\n\n    </application>\n\n</manifest>\n
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision ee1a900dd5c2a0ffa060d13a6446ae03086c8264)
++++ b/app/src/main/AndroidManifest.xml	(date 1789105838162)
+@@ -1,6 +1,19 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+-    xmlns:tools="http://android.com">
++    xmlns:tools="http://schemas.android.com/tools">
++
++    <queries>
++        <!-- For Map Navigation in SafePlacesActivity -->
++        <intent>
++            <action android:name="android.intent.action.VIEW" />
++            <data android:scheme="google.navigation" />
++        </intent>
++        <!-- For Dialing in VolunteersActivity and MapActivity -->
++        <intent>
++            <action android:name="android.intent.action.DIAL" />
++            <data android:scheme="tel" />
++        </intent>
++    </queries>
+ 
+     <application
+         android:allowBackup="true"
+Index: app/src/main/java/com/sih/myapplication/VolunteersActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.sih.myapplication;\n\nimport android.content.Context;\nimport android.content.Intent;\nimport android.net.Uri;\nimport android.os.Bundle;\nimport android.view.LayoutInflater;\nimport android.view.View;\nimport android.view.ViewGroup;\nimport android.widget.Button;\nimport android.widget.TextView;\nimport android.widget.Toast;\nimport androidx.annotation.NonNull;\nimport androidx.appcompat.app.AppCompatActivity;\nimport androidx.recyclerview.widget.LinearLayoutManager;\nimport androidx.recyclerview.widget.RecyclerView;\nimport java.util.ArrayList;\nimport java.util.List;\n\npublic class VolunteersActivity extends AppCompatActivity {\n\n    private Button btnBack;\n    private TextView tvVolunteerCount;\n    private RecyclerView rvVolunteers;\n    private VolunteerAdapter adapter;\n    private List<Volunteer> volunteerList;\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        setContentView(R.layout.activity_volunteers);\n\n        initViews();\n        loadDummyVolunteers();\n        setupRecyclerView();\n    }\n\n    private void initViews() {\n        btnBack = findViewById(R.id.btnBack);\n        tvVolunteerCount = findViewById(R.id.tvVolunteerCount);\n        rvVolunteers = findViewById(R.id.rvVolunteers);\n\n        btnBack.setOnClickListener(new View.OnClickListener() {\n            @Override\n            public void onClick(View v) {\n                finish();\n            }\n        });\n    }\n\n    private void loadDummyVolunteers() {\n        volunteerList = new ArrayList<>();\n        volunteerList.add(new Volunteer(\"Rahul Sharma\", \"Certified First Responder\", \"350 m away\", \"Available now • Has Medical Kit\", \"+919876543210\"));\n        volunteerList.add(new Volunteer(\"Priya Nair\", \"Search & Rescue Volunteer\", \"620 m away\", \"Available now • Equipped with Stretcher\", \"+919876543211\"));\n        volunteerList.add(new Volunteer(\"Arjun Patel\", \"Disaster Relief Coordinator\", \"950 m away\", \"Standby • Mesh Relay Anchor\", \"+919876543212\"));\n\n        tvVolunteerCount.setText(volunteerList.size() + \" Online\");\n    }\n\n    private void setupRecyclerView() {\n        adapter = new VolunteerAdapter(this, volunteerList);\n        rvVolunteers.setLayoutManager(new LinearLayoutManager(this));\n        rvVolunteers.setAdapter(adapter);\n    }\n\n    // --- Model Class ---\n    public static class Volunteer {\n        private String name, role, distance, availability, phone;\n\n        public Volunteer(String name, String role, String distance, String availability, String phone) {\n            this.name = name;\n            this.role = role;\n            this.distance = distance;\n            this.availability = availability;\n            this.phone = phone;\n        }\n\n        public String getName() { return name; }\n        public String getRole() { return role; }\n        public String getDistance() { return distance; }\n        public String getAvailability() { return availability; }\n        public String getPhone() { return phone; }\n    }\n\n    // --- RecyclerView Adapter ---\n    public static class VolunteerAdapter extends RecyclerView.Adapter<VolunteerAdapter.ViewHolder> {\n        private final Context context;\n        private final List<Volunteer> volunteerList;\n\n        public VolunteerAdapter(Context context, List<Volunteer> volunteerList) {\n            this.context = context;\n            this.volunteerList = volunteerList;\n        }\n\n        @NonNull\n        @Override\n        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {\n            View view = LayoutInflater.from(context).inflate(R.layout.item_volunteer, parent, false);\n            return new ViewHolder(view);\n        }\n\n        @Override\n        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {\n            Volunteer volunteer = volunteerList.get(position);\n            holder.tvVolunteerName.setText(volunteer.getName());\n            holder.tvVolunteerRole.setText(volunteer.getRole());\n            holder.tvVolunteerDistance.setText(volunteer.getDistance());\n            holder.tvVolunteerAvailability.setText(\"● \" + volunteer.getAvailability());\n\n            holder.btnContactVolunteer.setOnClickListener(new View.OnClickListener() {\n                @Override\n                public void onClick(View v) {\n                    Intent dialIntent = new Intent(Intent.ACTION_DIAL);\n                    dialIntent.setData(Uri.parse(\"tel:\" + volunteer.getPhone()));\n                    if (dialIntent.resolveActivity(context.getPackageManager()) != null) {\n                        context.startActivity(dialIntent);\n                    } else {\n                        Toast.makeText(context, \"Contacting \" + volunteer.getName() + \" (\" + volunteer.getPhone() + \")\", Toast.LENGTH_SHORT).show();\n                    }\n                }\n            });\n        }\n\n        @Override\n        public int getItemCount() {\n            return volunteerList.size();\n        }\n\n        public static class ViewHolder extends RecyclerView.ViewHolder {\n            TextView tvVolunteerName, tvVolunteerRole, tvVolunteerDistance, tvVolunteerAvailability;\n            Button btnContactVolunteer;\n\n            public ViewHolder(@NonNull View itemView) {\n                super(itemView);\n                tvVolunteerName = itemView.findViewById(R.id.tvVolunteerName);\n                tvVolunteerRole = itemView.findViewById(R.id.tvVolunteerRole);\n                tvVolunteerDistance = itemView.findViewById(R.id.tvVolunteerDistance);\n                tvVolunteerAvailability = itemView.findViewById(R.id.tvVolunteerAvailability);\n                btnContactVolunteer = itemView.findViewById(R.id.btnContactVolunteer);\n            }\n        }\n    }\n}
+===================================================================
+diff --git a/app/src/main/java/com/sih/myapplication/VolunteersActivity.java b/app/src/main/java/com/sih/myapplication/VolunteersActivity.java
+--- a/app/src/main/java/com/sih/myapplication/VolunteersActivity.java	(revision ee1a900dd5c2a0ffa060d13a6446ae03086c8264)
++++ b/app/src/main/java/com/sih/myapplication/VolunteersActivity.java	(date 1789105878972)
+@@ -1,5 +1,6 @@
+ package com.sih.myapplication;
+ 
++import android.content.ActivityNotFoundException;
+ import android.content.Context;
+ import android.content.Intent;
+ import android.net.Uri;
+@@ -112,10 +113,10 @@
+                 public void onClick(View v) {
+                     Intent dialIntent = new Intent(Intent.ACTION_DIAL);
+                     dialIntent.setData(Uri.parse("tel:" + volunteer.getPhone()));
+-                    if (dialIntent.resolveActivity(context.getPackageManager()) != null) {
++                    try {
+                         context.startActivity(dialIntent);
+-                    } else {
+-                        Toast.makeText(context, "Contacting " + volunteer.getName() + " (" + volunteer.getPhone() + ")", Toast.LENGTH_SHORT).show();
++                    } catch (ActivityNotFoundException e) {
++                        Toast.makeText(context, "Dialer not found. Contacting " + volunteer.getName(), Toast.LENGTH_SHORT).show();
+                     }
+                 }
+             });

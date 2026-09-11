@@ -1,0 +1,118 @@
+[
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.sih.myapplication.app-main-42:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/layout_activity_status.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/layout/activity_status.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/drawable_bg_card.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/drawable/bg_card.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/drawable_bg_status_alert.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/drawable/bg_status_alert.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/layout_activity_safe_places.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/layout/activity_safe_places.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/layout_activity_map.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/layout/activity_map.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/layout_item_safe_place.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/layout/item_safe_place.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.sih.myapplication.app-main-42:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/layout_item_volunteer.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/layout/item_volunteer.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.sih.myapplication.app-main-42:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/mipmap-anydpi_ic_launcher_round.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/mipmap-anydpi/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/drawable_bg_sos_ring.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/drawable/bg_sos_ring.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/layout_activity_volunteers.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/layout/activity_volunteers.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/mipmap-anydpi_ic_launcher.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/mipmap-anydpi/ic_launcher.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/drawable_bg_sos_button.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/drawable/bg_sos_button.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.sih.myapplication.app-main-42:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/drawable_bg_status_normal.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/drawable/bg_status_normal.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/layout_activity_emergency.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/layout/activity_emergency.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.sih.myapplication.app-main-42:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.sih.myapplication.app-main-42:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/xml_backup_rules.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/xml_data_extraction_rules.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.sih.myapplication.app-main-42:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.sih.myapplication.app-main-42:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/layout_activity_main.xml.flat",
+        "source": "com.sih.myapplication.app-main-42:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.sih.myapplication.app-main-42:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.sih.myapplication.app-debug-40:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.sih.myapplication.app-main-42:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    }
+]
