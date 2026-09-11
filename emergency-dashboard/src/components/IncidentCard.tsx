@@ -5,6 +5,7 @@ import { ACTION_LABEL, NEXT_STATUS } from "../types/emergency";
 import StatusBadge from "./StatusBadge";
 import SeverityChip from "./SeverityChip";
 import {
+  formatConfidence,
   formatRelative,
   formatStationary,
   MONO,
@@ -64,6 +65,12 @@ export default function IncidentCard({
           <div className="metric">
             <span className="metric__label">Nearby devices</span>
             <span className={`metric__value ${MONO}`}>{emergency.nearbyDevices}</span>
+          </div>
+          <div className="metric">
+            <span className="metric__label">Confidence</span>
+            <span className={`metric__value ${MONO} ${emergency.confidenceLevel ? `metric__value--confidence-${emergency.confidenceLevel.toLowerCase()}` : ""}`}>
+              {formatConfidence(emergency.confidence, emergency.confidenceLevel)}
+            </span>
           </div>
           <div className="metric">
             <span className="metric__label">Detected</span>

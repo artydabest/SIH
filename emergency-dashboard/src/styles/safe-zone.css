@@ -1,6 +1,6 @@
 .safe-zone__card {
   margin-top: 0.7rem;
-  border: 1px dashed var(--border-strong);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background-color: var(--surface-2);
   padding: 0.9rem 1rem;
@@ -8,6 +8,32 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 0.45rem;
+}
+
+.safe-zone__list {
+  display: flex;
+  flex-direction: column;
+}
+
+.safe-zone__card--link {
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.safe-zone__card--link:hover {
+  border-color: var(--blue);
+}
+
+.safe-zone__kind {
+  margin: 0;
+  font-size: 0.74rem;
+  color: var(--text-2);
+}
+
+.safe-zone__coords {
+  font-size: 0.68rem;
+  color: var(--muted);
 }
 
 .safe-zone__name {

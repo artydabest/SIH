@@ -1,6 +1,6 @@
-import { Check, MapPin, Radio } from "lucide-react";
+import { Check, Gauge, MapPin, Radio } from "lucide-react";
 import type { Emergency } from "../types/emergency";
-import { formatStationary } from "../lib/format";
+import { formatConfidence, formatStationary } from "../lib/format";
 import "../styles/evidence.css";
 
 interface EvidencePanelProps {
@@ -33,6 +33,10 @@ export default function EvidencePanel({ emergency }: EvidencePanelProps) {
         <li>
           <Radio size={14} aria-hidden="true" className="evidence__check" />
           Relayed by nearby iPhone detection network
+        </li>
+        <li>
+          <Gauge size={14} aria-hidden="true" className="evidence__check" />
+          Detection confidence {formatConfidence(emergency.confidence, emergency.confidenceLevel)}
         </li>
       </ul>
       <p className="evidence__conclusion">

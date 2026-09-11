@@ -3,12 +3,13 @@ import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Toasts from "./Toasts";
+import AlertBanner from "./AlertBanner";
 import { useEmergencyData } from "../context/EmergencyDataContext";
 import "../styles/shell.css";
 
 export default function AppShell() {
   const [collapsed, setCollapsed] = useState(false);
-  const { emergencies, loading, connection } = useEmergencyData();
+  const { emergencies, loading, connection, activeAlert } = useEmergencyData();
 
   const showOfflineBanner =
     connection === "unavailable" && !loading && emergencies.length === 0;
@@ -18,6 +19,7 @@ export default function AppShell() {
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />
       <div className="app-shell__main">
         <Header />
+        {activeAlert && <AlertBanner alert={activeAlert} />}
         {showOfflineBanner && (
           <div className="offline-banner" role="alert">
             <div>

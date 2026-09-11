@@ -3,6 +3,7 @@ import { useCallback, type ReactNode } from "react";
 import { ToastProvider, useToasts } from "./context/ToastContext";
 import type { Toast } from "./types/toast";
 import { EmergencyDataProvider } from "./context/EmergencyDataContext";
+import ErrorBoundary from "./components/ErrorBoundary";
 import AppShell from "./components/AppShell";
 import Dashboard from "./pages/Dashboard";
 import Incidents from "./pages/Incidents";
@@ -29,23 +30,25 @@ function EmergencyDataBridge({ children }: { children: ReactNode }) {
 
 export default function App() {
   return (
-    <ToastProvider>
-      <EmergencyDataBridge>
-        <BrowserRouter>
-          <Routes>
-            <Route element={<AppShell />}>
-              <Route index element={<Dashboard />} />
-              <Route path="incidents" element={<Incidents />} />
-              <Route path="incidents/:id" element={<IncidentDetailPage />} />
-              <Route path="map" element={<MapPage />} />
-              <Route path="history" element={<History />} />
-              <Route path="people" element={<People />} />
-              <Route path="settings" element={<Settings />} />
-              <Route path="*" element={<Dashboard />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </EmergencyDataBridge>
-    </ToastProvider>
+    <ErrorBoundary>
+      <ToastProvider>
+        <EmergencyDataBridge>
+          <BrowserRouter>
+            <Routes>
+              <Route element={<AppShell />}>
+                <Route index element={<Dashboard />} />
+                <Route path="incidents" element={<Incidents />} />
+                <Route path="incidents/:id" element={<IncidentDetailPage />} />
+                <Route path="map" element={<MapPage />} />
+                <Route path="history" element={<History />} />
+                <Route path="people" element={<People />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="*" element={<Dashboard />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </EmergencyDataBridge>
+      </ToastProvider>
+    </ErrorBoundary>
   );
 }

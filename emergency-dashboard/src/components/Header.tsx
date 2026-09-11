@@ -5,7 +5,7 @@ import { formatRelative } from "../lib/format";
 import "../styles/header.css";
 
 export default function Header() {
-  const { connection, lastSync, refresh, refreshing, dataSource } =
+  const { connection, lastSync, refresh, refreshing, liveConnected } =
     useEmergencyData();
   const now = useNow(1000);
 
@@ -37,18 +37,13 @@ export default function Header() {
           <span className="conn-pill__dot" aria-hidden="true" />
           {statusText}
         </span>
-        {dataSource === "demo" && (
-          <span className="demo-chip" title="Backend unreachable — showing demo data">
-            DEMO DATA
-          </span>
-        )}
+        {liveConnected && <span className="live-chip">⚡ LIVE</span>}
         <span className="ops-header__sync mono">
           {lastSync ? `Last sync ${formatRelative(new Date(lastSync).toISOString(), now.getTime())}` : "Awaiting first sync"}
         </span>
       </div>
 
       <div className="ops-header__right">
-        <span className="ops-header__responder">Responder · PRADY</span>
         <time className="ops-header__clock mono" dateTime={now.toISOString()}>
           {now.toLocaleTimeString()}
         </time>

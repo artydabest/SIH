@@ -15,7 +15,7 @@ const FILTERS: Array<{ key: EmergencyStatus | "ALL"; label: string }> = [
 ];
 
 export default function Incidents() {
-  const { emergencies, loading, updatingId, updateStatus, dataSource } =
+  const { emergencies, people, safeZones, volunteers, loading, updatingId, updateStatus } =
     useEmergencyData();
   const now = useNow(1000);
   const [filter, setFilter] = useState<EmergencyStatus | "ALL">("ALL");
@@ -62,7 +62,6 @@ export default function Incidents() {
           selectedId={selectedId}
           onStatusUpdate={(id, nextStatus) => void updateStatus(id, nextStatus)}
           onSelect={(emergency) => setSelectedId(emergency._id)}
-          demoMode={dataSource === "demo"}
         />
         <section className="panel panel--map" aria-label="Incident map">
           <div className="panel__heading">
@@ -70,8 +69,11 @@ export default function Incidents() {
           </div>
           <RescueMap
             emergencies={filtered}
+            people={people}
+            safeZones={safeZones}
+            volunteers={volunteers}
             selectedId={selectedId}
-            onSelect={(emergency) => setSelectedId(emergency._id)}
+            onSelect={(emergency) => setSelectedId(emergency?._id ?? null)}
           />
         </section>
       </div>

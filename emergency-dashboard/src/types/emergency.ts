@@ -4,6 +4,8 @@ export type EmergencyStatus =
   | "RESPONDING"
   | "RESOLVED";
 
+export type ConfidenceLevel = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+
 export interface Emergency {
   _id: string;
   deviceId: string;
@@ -12,6 +14,10 @@ export interface Emergency {
   altitude?: number | null;
   stationaryMinutes: number;
   nearbyDevices: number;
+  emergencyMode?: boolean;
+  /** Missing on records created before confidence scoring was added. */
+  confidence?: number;
+  confidenceLevel?: ConfidenceLevel;
   status: EmergencyStatus;
   createdAt: string;
   updatedAt: string;

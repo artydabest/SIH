@@ -9,22 +9,31 @@ import {
   type ReactNode,
 } from "react";
 import type { Emergency, EmergencyStatus } from "../types/emergency";
+import type { Person } from "../types/person";
+import type { SafeZone } from "../types/safezone";
+import type { Volunteer } from "../types/volunteer";
+import type { DisasterAlert } from "../types/alert";
 import { getEmergencies, updateEmergencyStatus, API_URL } from "../api/emergencyApi";
-import { MOCK_EMERGENCIES } from "../mocks/demoEmergencies";
+import { getPeople } from "../api/peopleApi";
+import { getSafeZones } from "../api/safezoneApi";
+import { getVolunteers } from "../api/volunteerApi";
+import { connectLive } from "../api/live";
 import type { Toast } from "../types/toast";
 
 const POLL_INTERVAL_MS = 7000;
 
 export type ConnectionStatus = "connected" | "unavailable" | "unknown";
 
-export type DataSource = "live" | "demo";
-
 export interface EmergencyData {
   emergencies: Emergency[];
+  people: Person[];
+  safeZones: SafeZone[];
+  volunteers: Volunteer[];
+  activeAlert: DisasterAlert | null;
   loading: boolean;
   refreshing: boolean;
   connection: ConnectionStatus;
-  dataSource: DataSource;
+  liveConnected: boolean;
   lastSync: number | null;
   refresh: () => void;
   updateStatus: (id: string, nextStatus: EmergencyStatus) => Promise<void>;
@@ -34,8 +43,6 @@ export interface EmergencyData {
 
 const EmergencyDataContext = createContext<EmergencyData | null>(null);
 
-const MOCK_ENABLED = import.meta.env.VITE_ENABLE_MOCK_DATA !== "false";
-
 interface ProviderProps {
   children: ReactNode;
   onToast?: (toast: Toast) => void;
@@ -43,10 +50,14 @@ interface ProviderProps {
 
 export function EmergencyDataProvider({ children, onToast }: ProviderProps) {
   const [emergencies, setEmergencies] = useState<Emergency[]>([]);
+  const [people, setPeople] = useState<Person[]>([]);
+  const [safeZones, setSafeZones] = useState<SafeZone[]>([]);
+  const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
+  const [activeAlert, setActiveAlert] = useState<DisasterAlert | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [connection, setConnection] = useState<ConnectionStatus>("unknown");
-  const [dataSource, setDataSource] = useState<DataSource>("live");
+  const [liveConnected, setLiveConnected] = useState(false);
   const [lastSync, setLastSync] = useState<number | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
@@ -54,6 +65,8 @@ export function EmergencyDataProvider({ children, onToast }: ProviderProps) {
   const pollTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const requestSeq = useRef(0);
   const announcedOutage = useRef(false);
+  const announcedNewAlerts = useRef(false);
+  const knownIds = useRef<Set<string>>(new Set());
 
   const toast = useCallback(
     (t: Omit<Toast, "id">) => {
@@ -67,22 +80,29 @@ export function EmergencyDataProvider({ children, onToast }: ProviderProps) {
     try {
       const data = await getEmergencies();
       if (seq !== requestSeq.current) return; // stale response — ignore
-      setEmergencies(data);
+
+      setEmergencies(() => {
+        if (knownIds.current.size > 0) {
+          const fresh = data.filter((e) => !knownIds.current.has(e._id));
+          if (fresh.length > 0 && !announcedNewAlerts.current) {
+            announcedNewAlerts.current = true;
+            toast({
+              message: `${fresh.length} new alert${fresh.length === 1 ? "" : "s"} received`,
+              kind: "info",
+            });
+          }
+        }
+        knownIds.current = new Set(data.map((e) => e._id));
+        return data;
+      });
+
       setConnection("connected");
-      setDataSource("live");
       setLastSync(Date.now());
       announcedOutage.current = false;
     } catch {
       if (seq !== requestSeq.current) return;
       setConnection("unavailable");
-      // Demo mode: only when we have never received real data.
-      setEmergencies((current) => {
-        if (current.length === 0 && MOCK_ENABLED) {
-          setDataSource("demo");
-          return MOCK_EMERGENCIES;
-        }
-        return current; // keep last real data visible during outage
-      });
+      // Keep last real data visible during an outage; no fake data.
       if (!announcedOutage.current) {
         announcedOutage.current = true;
         toast({
@@ -112,6 +132,76 @@ export function EmergencyDataProvider({ children, onToast }: ProviderProps) {
     };
   }, [fetchEmergencies]);
 
+  // Auxiliary layers: people, safe zones, volunteers, active alert.
+  const fetchAuxData = useCallback(async () => {
+    const [peopleRes, zonesRes, volunteersRes, alertsRes] = await Promise.allSettled([
+      getPeople(),
+      getSafeZones(),
+      getVolunteers(),
+      fetch(`${API_URL}/api/alerts?active=1`).then((r) => {
+        if (!r.ok) throw new Error("alerts fetch failed");
+        return r.json() as Promise<{ success: boolean; alerts: DisasterAlert[] }>;
+      }),
+    ]);
+
+    if (peopleRes.status === "fulfilled") setPeople(peopleRes.value);
+    if (zonesRes.status === "fulfilled") setSafeZones(zonesRes.value);
+    if (volunteersRes.status === "fulfilled") setVolunteers(volunteersRes.value);
+    if (alertsRes.status === "fulfilled") {
+      const latest = alertsRes.value.alerts[0] ?? null;
+      setActiveAlert(latest && latest.active ? latest : null);
+    }
+  }, []);
+
+  useEffect(() => {
+    void fetchAuxData();
+    const timer = setInterval(() => {
+      void fetchAuxData();
+    }, POLL_INTERVAL_MS);
+    return () => clearInterval(timer);
+  }, [fetchAuxData]);
+
+  // Live Socket.IO updates: patch state in place between polls.
+  useEffect(() => {
+    const socket = connectLive(
+      API_URL,
+      (event) => {
+        if (event.type === "alert") {
+          setActiveAlert(event.alert);
+          toast({
+            message: `🚨 ${event.alert.type} ALERT — ${event.alert.message}`,
+            kind: "error",
+          });
+        } else if (event.type === "new") {
+          setEmergencies((current) =>
+            current.some((e) => e._id === event.emergency._id)
+              ? current
+              : [event.emergency, ...current]
+          );
+          knownIds.current.add(event.emergency._id);
+          toast({
+            message: `New emergency from device #${event.emergency.deviceId}`,
+            kind: "info",
+          });
+        } else {
+          setEmergencies((current) =>
+            current.map((e) =>
+              e._id === event.emergency._id ? event.emergency : e
+            )
+          );
+        }
+        void fetchAuxData();
+        setConnection("connected");
+        setLastSync(Date.now());
+      },
+      (connected) => setLiveConnected(connected)
+    );
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [toast, fetchAuxData]);
+
   const refresh = useCallback(() => {
     setRefreshing(true);
     void fetchEmergencies();
@@ -137,10 +227,14 @@ export function EmergencyDataProvider({ children, onToast }: ProviderProps) {
   const value = useMemo<EmergencyData>(
     () => ({
       emergencies,
+      people,
+      safeZones,
+      volunteers,
+      activeAlert,
       loading,
       refreshing,
       connection,
-      dataSource,
+      liveConnected,
       lastSync,
       refresh,
       updateStatus,
@@ -149,10 +243,14 @@ export function EmergencyDataProvider({ children, onToast }: ProviderProps) {
     }),
     [
       emergencies,
+      people,
+      safeZones,
+      volunteers,
+      activeAlert,
       loading,
       refreshing,
       connection,
-      dataSource,
+      liveConnected,
       lastSync,
       refresh,
       updateStatus,

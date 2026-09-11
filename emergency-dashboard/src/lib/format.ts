@@ -76,3 +76,15 @@ export function severityOf(
   if (status === "ACKNOWLEDGED") return "ELEVATED";
   return "ACTIVE";
 }
+
+/**
+ * Renders backend confidence safely — old records predate confidence scoring
+ * and have no confidence/confidenceLevel fields.
+ */
+export function formatConfidence(
+  confidence: number | undefined,
+  level: string | undefined
+): string {
+  if (confidence == null || level == null) return "—";
+  return `${confidence}% ${level}`;
+}

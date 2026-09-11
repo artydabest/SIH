@@ -49,7 +49,7 @@
 
 .incident-card__metrics {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.6rem;
 }
 
@@ -71,6 +71,20 @@
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text);
+}
+
+/* Backend confidence levels — colors match the severity palette */
+.metric__value--confidence-critical,
+.metric__value--confidence-high {
+  color: var(--red);
+}
+
+.metric__value--confidence-medium {
+  color: var(--orange);
+}
+
+.metric__value--confidence-low {
+  color: var(--muted);
 }
 
 .incident-card__actions {
