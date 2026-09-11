@@ -6,9 +6,13 @@ import StatusBadge from "./StatusBadge";
 import SeverityChip from "./SeverityChip";
 import EvidencePanel from "./EvidencePanel";
 import RescueMap from "./RescueMap";
+import type { Person } from "../types/person";
+import type { SafeZone } from "../types/safezone";
+import type { Volunteer } from "../types/volunteer";
 import { useNow } from "../hooks/useNow";
 import {
   formatAltitude,
+  formatConfidence,
   formatCoords,
   formatRelative,
   formatStationary,
@@ -19,6 +23,9 @@ import "../styles/incident-detail.css";
 
 interface IncidentDetailProps {
   emergency: Emergency | undefined;
+  people: Person[];
+  safeZones: SafeZone[];
+  volunteers: Volunteer[];
   updatingId: string | null;
   onStatusUpdate: (id: string, nextStatus: Emergency["status"]) => void;
   backTo: string;
@@ -26,6 +33,9 @@ interface IncidentDetailProps {
 
 export default function IncidentDetail({
   emergency,
+  people,
+  safeZones,
+  volunteers,
   updatingId,
   onStatusUpdate,
   backTo,
@@ -85,6 +95,18 @@ export default function IncidentDetail({
               </dd>
             </div>
             <div className="fact">
+              <dt>Confidence</dt>
+              <dd className={MONO}>
+                {formatConfidence(emergency.confidence, emergency.confidenceLevel)}
+              </dd>
+            </div>
+            {emergency.emergencyMode != null && (
+              <div className="fact">
+                <dt>Emergency mode</dt>
+                <dd>{emergency.emergencyMode ? "ACTIVE" : "OFF"}</dd>
+              </div>
+            )}
+            <div className="fact">
               <dt>Detected</dt>
               <dd className={MONO}>{formatRelative(emergency.createdAt, now.getTime())}</dd>
             </div>
@@ -130,6 +152,9 @@ export default function IncidentDetail({
           <h3 className="panel__title">LAST KNOWN LOCATION</h3>
           <RescueMap
             emergencies={[emergency]}
+            people={people}
+            safeZones={safeZones}
+            volunteers={volunteers}
             selectedId={emergency._id}
             onSelect={() => undefined}
           />

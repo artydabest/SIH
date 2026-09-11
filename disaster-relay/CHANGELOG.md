@@ -1,5 +1,18 @@
 # Changelog — disaster-relay
 
+## 2026-09-11 — Live updates, safe zones, volunteers, validation
+
+### Added
+
+- **Socket.IO live layer (`src/socket.ts`)** — attached to the HTTP server; broadcasts `emergency:new` and `emergency:status` to all connected dashboards so they update instantly instead of waiting for the next poll.
+- **`GET /api/safezones` (`src/routes/safezones.ts`, `src/models/SafeZone.ts`)** — read-only list of shelters/hospitals/camps for the citizen app; auto-seeded on first boot (`src/seed.ts`, idempotent).
+- **`GET /api/volunteers` (`src/routes/volunteers.ts`, `src/models/Volunteer.ts`)** — read-only volunteer list (name, coordinates, availability, phone); also auto-seeded.
+- Request validation on `POST /api/emergency` and `PATCH /api/emergency/:id/status` — precise `400` messages for bad latitude/longitude/deviceId/status instead of generic cast errors.
+
+### Changed
+
+- **`src/server.ts`** — wrapped in `http.createServer` for Socket.IO; mounted `/api/safezones` and `/api/volunteers`; `PORT` now comes from env; runs `seedDatabase()` after connecting.
+
 ## 2026-09-10 — Emergency reporting backend
 
 ### Added

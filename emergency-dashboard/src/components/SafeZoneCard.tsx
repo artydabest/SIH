@@ -1,26 +1,54 @@
 import { TriangleAlert } from "lucide-react";
+import type { SafeZone } from "../types/safezone";
+import { SAFE_ZONE_KIND_LABEL } from "../types/safezone";
+import { formatCoords } from "../lib/format";
+import { osmUrl } from "../lib/format";
 import "../styles/safe-zone.css";
 
-/**
- * DEMO COMPONENT — the backend provides no safe-zone data.
- * Clearly marked as simulated; never presented as real infrastructure.
- */
-export default function SafeZoneCard() {
+interface SafeZoneCardProps {
+  safeZones: SafeZone[];
+}
+
+/** Nearest safe-zone summary using REAL backend data. */
+export default function SafeZoneCard({ safeZones }: SafeZoneCardProps) {
+  if (safeZones.length === 0) {
+    return (
+      <section className="safe-zone" aria-label="Safe zones">
+        <h3 className="panel__title">SAFE ZONES</h3>
+        <p className="muted">No safe zones registered in the backend yet.</p>
+      </section>
+    );
+  }
+
   return (
-    <section className="safe-zone" aria-label="Nearest safe zone (demo)">
-      <h3 className="panel__title">NEAREST SAFE ZONE</h3>
-      <div className="safe-zone__card">
-        <p className="safe-zone__name">City Emergency Shelter</p>
-        <p className="safe-zone__distance mono">650 m</p>
-        <span className="demo-chip">DEMO DATA</span>
-        <button type="button" className="btn btn--primary" disabled>
-          NAVIGATE TO SAFETY
-        </button>
-        <p className="safe-zone__note">
-          <TriangleAlert size={12} aria-hidden="true" /> Safe-zone routing is not
-          available in this prototype.
-        </p>
+    <section className="safe-zone" aria-label="Safe zones">
+      <h3 className="panel__title">SAFE ZONES</h3>
+      <div className="safe-zone__list">
+        {safeZones.slice(0, 3).map((zone) => (
+          <a
+            key={zone._id}
+            className="safe-zone__card safe-zone__card--link"
+            href={osmUrl(zone.latitude, zone.longitude)}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <p className="safe-zone__name">{zone.name}</p>
+            <p className="safe-zone__kind">
+              {SAFE_ZONE_KIND_LABEL[zone.kind] ?? zone.kind}
+              {zone.capacity != null && zone.capacity > 0
+                ? ` · capacity ${zone.capacity}`
+                : ""}
+            </p>
+            <span className="safe-zone__coords mono">
+              {formatCoords(zone.latitude, zone.longitude)}
+            </span>
+          </a>
+        ))}
       </div>
+      <p className="safe-zone__note">
+        <TriangleAlert size={12} aria-hidden="true" /> Routing is a prototype —
+        links open the location on a map.
+      </p>
     </section>
   );
 }

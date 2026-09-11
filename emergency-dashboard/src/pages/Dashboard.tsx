@@ -8,15 +8,17 @@ import SafeZoneCard from "../components/SafeZoneCard";
 import "../styles/page.css";
 
 export default function Dashboard() {
-  const { emergencies, loading, updatingId, updateStatus, dataSource } =
+  const { emergencies, people, safeZones, volunteers, activeAlert, loading, updatingId, updateStatus } =
     useEmergencyData();
   const now = useNow(1000);
   const navigate = useNavigate();
 
   const active = emergencies.filter((e) => e.status !== "RESOLVED");
 
-  const handleSelect = (emergency: { _id: string }) => {
-    navigate(`/incidents/${emergency._id}`);
+  const handleSelect = (emergency: { _id: string } | null) => {
+    if (emergency) {
+      navigate(`/incidents/${emergency._id}`);
+    }
   };
 
   return (
@@ -42,7 +44,6 @@ export default function Dashboard() {
             selectedId={null}
             onStatusUpdate={(id, nextStatus) => void updateStatus(id, nextStatus)}
             onSelect={handleSelect}
-            demoMode={dataSource === "demo"}
           />
         </section>
 
@@ -54,11 +55,15 @@ export default function Dashboard() {
             </div>
             <RescueMap
               emergencies={emergencies}
+              people={people}
+              safeZones={safeZones}
+              volunteers={volunteers}
+              activeAlert={activeAlert}
               selectedId={null}
               onSelect={handleSelect}
             />
           </section>
-          <SafeZoneCard />
+          <SafeZoneCard safeZones={safeZones} />
         </div>
       </div>
     </div>

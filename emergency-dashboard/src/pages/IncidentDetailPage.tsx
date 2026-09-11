@@ -5,7 +5,8 @@ import "../styles/page.css";
 
 export default function IncidentDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { emergencies, updatingId, updateStatus } = useEmergencyData();
+  const { emergencies, people, safeZones, volunteers, updatingId, updateStatus } =
+    useEmergencyData();
 
   const emergency = emergencies.find((e) => e._id === id);
 
@@ -13,6 +14,9 @@ export default function IncidentDetailPage() {
     <div className="page">
       <IncidentDetail
         emergency={emergency}
+        people={people}
+        safeZones={safeZones}
+        volunteers={volunteers}
         updatingId={updatingId}
         onStatusUpdate={(incidentId, nextStatus) =>
           void updateStatus(incidentId, nextStatus)

@@ -6,7 +6,7 @@ import { useNow } from "../hooks/useNow";
 import "../styles/page.css";
 
 export default function MapPage() {
-  const { emergencies, loading, updatingId, updateStatus, dataSource } =
+  const { emergencies, people, safeZones, volunteers, activeAlert, loading, updatingId, updateStatus } =
     useEmergencyData();
   const now = useNow(1000);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -26,8 +26,12 @@ export default function MapPage() {
         <section className="panel panel--map panel--tall" aria-label="Rescue map">
           <RescueMap
             emergencies={emergencies}
+            people={people}
+            safeZones={safeZones}
+            volunteers={volunteers}
+            activeAlert={activeAlert}
             selectedId={selectedId}
-            onSelect={(emergency) => setSelectedId(emergency._id)}
+            onSelect={(emergency) => setSelectedId(emergency?._id ?? null)}
           />
         </section>
 
@@ -49,9 +53,6 @@ export default function MapPage() {
                 selected={selectedId === emergency._id}
               />
             ))
-          )}
-          {dataSource === "demo" && (
-            <p className="demo-note">DEMO DATA — backend unreachable.</p>
           )}
         </aside>
       </div>

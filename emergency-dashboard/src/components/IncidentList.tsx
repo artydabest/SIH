@@ -11,7 +11,6 @@ interface IncidentListProps {
   selectedId: string | null;
   onStatusUpdate: (id: string, nextStatus: Emergency["status"]) => void;
   onSelect: (emergency: Emergency) => void;
-  demoMode: boolean;
 }
 
 function SkeletonCard() {
@@ -33,7 +32,6 @@ export default function IncidentList({
   selectedId,
   onStatusUpdate,
   onSelect,
-  demoMode,
 }: IncidentListProps) {
   if (loading && emergencies.length === 0) {
     return (
@@ -59,12 +57,7 @@ export default function IncidentList({
   }
 
   return (
-    <div className={`incident-list ${demoMode ? "incident-list--demo" : ""}`}>
-      {demoMode && (
-        <p className="demo-note">
-          DEMO DATA — backend unreachable. Showing simulated incidents.
-        </p>
-      )}
+    <div className="incident-list">
       {emergencies.map((emergency) => (
         <IncidentCard
           key={emergency._id}
