@@ -1,11 +1,24 @@
 import express from "express";
 import Emergency from "../models/Emergency";
+import { calculateConfidence } from "../utils/confidence";
 
 const router = express.Router();
 
 router.post("/", async (req, res) => {
   try {
-    const emergency = await Emergency.create(req.body);
+    const { stationaryMinutes, nearbyDevices, emergencyMode } = req.body;
+
+const { score, level } = calculateConfidence({
+  stationaryMinutes,
+  nearbyDevices,
+  emergencyMode: emergencyMode ?? false,
+});
+
+const emergency = await Emergency.create({
+  ...req.body,
+  confidence: score,
+  confidenceLevel: level,
+});
 
     console.log("EMERGENCY STORED:");
     console.log(emergency);
