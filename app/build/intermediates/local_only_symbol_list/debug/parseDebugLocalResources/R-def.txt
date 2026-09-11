@@ -1,0 +1,30 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color white
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+id backButton
+id countText
+id detailTitle
+id deviceIdDetail
+id eventIdDetail
+id eventText
+id locationDetail
+id main
+id reportsContainer
+id resetButton
+id signalDetail
+id simulateButton
+id statusDetail
+id timestampDetail
+layout activity_device_details
+layout activity_device_details_
+layout activity_main
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+style Base.Theme.MyApplication
+style Theme.MyApplication
+xml backup_rules
+xml data_extraction_rules
