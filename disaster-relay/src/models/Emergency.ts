@@ -31,7 +31,21 @@ const emergencySchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    emergencyMode: {
+  type: Boolean,
+  required: true,
+  default: false,
+},
+     confidence: {
+     type: Number,
+      required: true,
+    },
 
+     confidenceLevel: {
+      type: String,
+      enum: ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+      required: true,
+    },
     status: {
       type: String,
       enum: ["NEW", "ACKNOWLEDGED", "RESPONDING", "RESOLVED"],
