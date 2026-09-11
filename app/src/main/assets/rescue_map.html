@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -7,11 +7,11 @@
 <style>
 *{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Arial,sans-serif;background:#101216;color:#f5f5f5;overflow:hidden}
 #map{position:relative;width:100%;height:100%;background:#1b1e24;overflow:hidden;touch-action:none}
-#grid{position:absolute;inset:-20%;background:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:42px 42px}
+#grid{position:absolute;top:-20%;right:-20%;bottom:-20%;left:-20%;background:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:42px 42px}
 .road{position:absolute;height:5px;background:#343943;border-radius:5px;transform-origin:left center;opacity:.85}
 .label{position:absolute;font-size:11px;color:#8e96a3;white-space:nowrap}
-.marker{position:absolute;width:30px;height:30px;border-radius:50%;border:3px solid white;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;box-shadow:0 2px 10px #000;z-index:5}
-.user{background:#3478f6}.shelter{background:#30a46c}.volunteer{background:#9b59f6}.offline{background:#555b66}
+.marker{position:absolute;width:30px;height:30px;border-radius:50%;border:3px solid white;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;box-shadow:0 2px 10px #000;z-index:5;margin:0;padding:0;cursor:pointer}
+.user{background:#3478f6;z-index:6}.shelter{background:#30a46c}.volunteer{background:#9b59f6}.offline{background:#555b66}
 #top{position:absolute;top:10px;left:10px;right:10px;z-index:10;background:rgba(10,11,14,.88);padding:10px 12px;border-radius:10px;border:1px solid #30343c}
 #top b{font-size:14px}.small{font-size:11px;color:#aeb4bd;margin-top:3px}
 #panel{position:absolute;left:10px;right:10px;bottom:10px;z-index:20;background:#17191e;border:1px solid #383c44;border-radius:12px;padding:12px;display:none}
@@ -53,23 +53,59 @@ var places=[
 var user={lat:12.962895,lon:77.577538};
 var bounds={minLat:12.93,maxLat:13.02,minLon:77.55,maxLon:77.62};
 function xy(lat,lon){return{x:(lon-bounds.minLon)/(bounds.maxLon-bounds.minLon)*100,y:(bounds.maxLat-lat)/(bounds.maxLat-bounds.minLat)*100}}
-function addMarker(p){
- var q=xy(p.lat,p.lon),el=document.createElement("button");
- el.className="marker "+p.type+(p.info==="Unavailable"?" offline":"");
- el.style.left=q.x+"%";el.style.top=q.y+"%";el.textContent=p.type==="shelter"?"S":"V";el.title=p.name;
- el.onclick=function(e){e.stopPropagation();show(p)};document.getElementById("markers").appendChild(el);
+function addMarker(p) {
+  var q = xy(p.lat, p.lon), el = document.createElement("button");
+  el.className = "marker " + p.type + (p.info === "Unavailable" ? " offline" : "");
+  el.style.left = q.x + "%";
+  el.style.top = q.y + "%";
+  el.textContent = p.type === "shelter" ? "S" : "V";
+  el.title = p.name;
+  el.setAttribute("aria-label", p.name + " (" + p.type + ")");
+  el.onclick = function(e) { e.stopPropagation(); show(p); };
+  document.getElementById("markers").appendChild(el);
 }
-function show(p){
- var d=distance(user.lat,user.lon,p.lat,p.lon),panel=document.getElementById("panel"),buttons="";
- if(p.type==="shelter")buttons='<button onclick="focusPlace('+p.lat+','+p.lon+')">Center on shelter</button>';
- else if(p.info==="Available")buttons='<button onclick="callVolunteer(\''+p.phone+'\')">Call</button><button onclick="focusPlace('+p.lat+','+p.lon+')">Center on volunteer</button>';
- panel.innerHTML="<b>"+p.name+"</b><div class=row>"+p.info+"</div><div class=row>Distance: "+d.toFixed(2)+" km</div>"+buttons;panel.style.display="block";
+
+function show(p) {
+  var d = distance(user.lat, user.lon, p.lat, p.lon), panel = document.getElementById("panel"), buttons = "";
+
+  // Center button for all markers
+  var label = p.type === "user" ? "your location" : p.type;
+  buttons += '<button onclick="focusPlace(' + p.lat + ',' + p.lon + ')">Center on ' + label + '</button>';
+
+  if (p.type === "volunteer" && p.info === "Available") {
+    buttons = '<button onclick="callVolunteer(\'' + p.phone + '\')">Call</button>' + buttons;
+  }
+
+  panel.innerHTML = "<b>" + p.name + "</b><div class=\"row\">" + p.info + "</div><div class=\"row\">Distance: " + d.toFixed(2) + " km</div>" + buttons;
+  panel.style.display = "block";
 }
-function distance(a,b,c,d){var R=6371,r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.sin(x/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)**2;return R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h))}
-function focusPlace(lat,lon){var q=xy(lat,lon);document.getElementById("grid").style.transform="scale(1.7) translate("+(50-q.x)/2+"%,"+(50-q.y)/2+"%)"}
-function callVolunteer(phone){window.location.href="tel:"+phone}
-var q=xy(user.lat,user.lon),u=document.createElement("div");u.className="marker user";u.style.left=q.x+"%";u.style.top=q.y+"%";u.textContent="U";u.onclick=function(){show({name:"Your location",lat:user.lat,lon:user.lon,type:"user",info:"Current GPS location"})};document.getElementById("markers").appendChild(u);
+function distance(a, b, c, d) {
+  var R = 6371, r = Math.PI / 180, x = (c - a) * r, y = (d - b) * r;
+  var h = Math.pow(Math.sin(x / 2), 2) + Math.cos(a * r) * Math.cos(c * r) * Math.pow(Math.sin(y / 2), 2);
+  return R * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+}
+function focusPlace(lat, lon) {
+  var q = xy(lat, lon);
+  document.getElementById("grid").style.transform = "scale(1.7) translate(" + (50 - q.x) / 2 + "%," + (50 - q.y) / 2 + "%)";
+}
+
+function callVolunteer(phone) {
+  window.location.href = "tel:" + phone;
+}
+
+// Add markers: Shelters and Volunteers first, then User on top
 places.forEach(addMarker);
+
+var q = xy(user.lat, user.lon), u = document.createElement("button");
+u.className = "marker user";
+u.style.left = q.x + "%";
+u.style.top = q.y + "%";
+u.textContent = "U";
+u.setAttribute("aria-label", "Your location");
+u.onclick = function() {
+  show({ name: "Your location", lat: user.lat, lon: user.lon, type: "user", info: "Current GPS location" });
+};
+document.getElementById("markers").appendChild(u);
 </script>
 </body>
 </html>
