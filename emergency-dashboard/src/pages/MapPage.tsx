@@ -32,7 +32,7 @@ export default function MapPage() {
         </section>
 
         <aside className="map-page-side">
-          <h3 className="panel__title">EMERGENCIES</h3>
+          <h3 className="panel__title">Emergencies</h3>
           {loading ? (
             <p className="muted">Loading incidents…</p>
           ) : active.length === 0 ? (
@@ -51,7 +51,7 @@ export default function MapPage() {
             ))
           )}
           {dataSource === "demo" && (
-            <p className="demo-note">DEMO DATA — backend unreachable.</p>
+            <p className="demo-note">Demo data — backend unreachable.</p>
           )}
         </aside>
       </div>

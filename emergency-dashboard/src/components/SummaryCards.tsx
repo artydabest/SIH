@@ -22,10 +22,10 @@ export default function SummaryCards({ emergencies, loading }: SummaryCardsProps
     const active = counts.NEW + counts.ACKNOWLEDGED + counts.RESPONDING;
 
     return [
-      { key: "active", label: "ACTIVE INCIDENTS", value: active, tone: "danger" },
-      { key: "new", label: "NEW ALERTS", value: counts.NEW, tone: "warning" },
-      { key: "responding", label: "RESPONDING", value: counts.RESPONDING, tone: "info" },
-      { key: "resolved", label: "RESOLVED", value: counts.RESOLVED, tone: "success" },
+      { key: "active", label: "Active incidents", value: active, tone: "danger" },
+      { key: "new", label: "New alerts", value: counts.NEW, tone: "warning" },
+      { key: "responding", label: "Responding", value: counts.RESPONDING, tone: "info" },
+      { key: "resolved", label: "Resolved", value: counts.RESOLVED, tone: "success" },
     ];
   }, [emergencies]);
 

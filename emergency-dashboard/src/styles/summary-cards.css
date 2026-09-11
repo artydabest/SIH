@@ -12,48 +12,32 @@
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
-  border-left: 3px solid var(--border-strong);
 }
 
 .summary-card__value {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.1;
+  font-variant-numeric: tabular-nums;
 }
 
 .summary-card__label {
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: 0.76rem;
+  font-weight: 500;
   color: var(--muted);
 }
 
-.summary-card--danger {
-  border-left-color: var(--red);
-}
-
+/* Tone is carried by the count text only — quiet, no strips or glows */
 .summary-card--danger .summary-card__value {
   color: var(--red);
-}
-
-.summary-card--warning {
-  border-left-color: var(--orange);
 }
 
 .summary-card--warning .summary-card__value {
   color: var(--orange);
 }
 
-.summary-card--info {
-  border-left-color: var(--blue);
-}
-
 .summary-card--info .summary-card__value {
   color: var(--blue);
-}
-
-.summary-card--success {
-  border-left-color: var(--green);
 }
 
 .summary-card--success .summary-card__value {

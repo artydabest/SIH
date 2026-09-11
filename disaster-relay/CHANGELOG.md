@@ -1,5 +1,23 @@
 # Changelog — disaster-relay
 
+## 2026-09-11 — Both Android clients share the backend (saanvi merge)
+
+### Added
+
+- Merged `origin/saanvi` (Trial2_SafePlaces_Volunteers) into `responder-dashboard`; both Android apps now live side by side (`MyApplication/` = responder-side app, root `app/` = Safe Places/Volunteers app).
+- **Trial2 app (`app/`) backend integration:**
+  - `EmergencyApi.java` — SOS POST + live incident feed against the shared `/api/emergency` store.
+  - `MainActivity.java` — SOS button (fused-location fix, sends without coordinates when denied), 7 s incident polling, status line; live incidents pushed into the offline rescue map via a new `window.loadIncidents(...)` bridge.
+  - `assets/rescue_map.html` — additive red pulsing incident markers (colour-coded by status, green when resolved) with Navigate-to-SOS-site popups; existing user/shelter/volunteer layers untouched.
+  - Manifest: cleartext enabled for the dev backend (permissions already present).
+
+### Notes
+
+- Trial2 shelters/volunteers remain hardcoded test data (marked as such in-app) — backend has no shelter collection yet.
+- Emulator base URL is `http://10.0.2.2:3000`; use the dev machine's LAN IP for physical devices.
+
+---
+
 ## 2026-09-11 — Android client connected to the shared backend
 
 ### Added

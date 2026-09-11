@@ -14,7 +14,7 @@ export default function SeverityChip({ emergency }: SeverityChipProps) {
   const severity = severityOf(emergency.status);
   return (
     <span className={`severity-chip severity-chip--${severity.toLowerCase()}`}>
-      ● {severity} PRIORITY
+      {severity} priority
     </span>
   );
 }

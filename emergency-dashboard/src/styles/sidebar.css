@@ -37,14 +37,31 @@
   overflow: hidden;
 }
 
+.sidebar__link--active:hover {
+  background-color: #34342f;
+  color: #fafaf9;
+}
+
 .sidebar__link:hover {
   background-color: var(--surface-2);
   color: var(--text);
 }
 
 .sidebar__link--active {
-  background-color: var(--blue-dim);
-  color: var(--blue);
+  background-color: #34342f;
+  color: #fafaf9;
+  position: relative;
+}
+
+.sidebar__link--active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background-color: #34342f;
+  border-radius: 2px;
 }
 
 .sidebar__label {

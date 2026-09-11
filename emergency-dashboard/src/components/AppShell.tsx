@@ -21,11 +21,11 @@ export default function AppShell() {
         {showOfflineBanner && (
           <div className="offline-banner" role="alert">
             <div>
-              <strong>SYSTEM OFFLINE</strong>
+              <strong>Backend unreachable</strong>
               <p>Unable to connect to responder backend.</p>
             </div>
             <button type="button" className="btn btn--danger" onClick={() => window.location.reload()}>
-              RETRY
+              Retry
             </button>
           </div>
         )}

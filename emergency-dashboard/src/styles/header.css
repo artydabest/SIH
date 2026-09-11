@@ -24,23 +24,21 @@
   width: 34px;
   height: 34px;
   border-radius: var(--radius-sm);
-  background-color: var(--red-dim);
-  color: var(--red);
-  border: 1px solid rgba(255, 59, 48, 0.35);
+  background-color: var(--surface-2);
+  color: var(--text-2);
+  border: 1px solid var(--border);
 }
 
 .ops-header h1 {
   margin: 0;
-  font-size: 0.9rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
+  font-size: 0.98rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
 }
 
 .ops-header__brand p {
   margin: 0;
-  font-size: 0.66rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 0.72rem;
   color: var(--muted);
 }
 
@@ -49,42 +47,6 @@
   align-items: center;
   gap: 0.7rem;
   flex-wrap: wrap;
-}
-
-.conn-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  padding: 0.28rem 0.65rem;
-  border-radius: 999px;
-  border: 1px solid;
-}
-
-.conn-pill__dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: currentColor;
-}
-
-.conn-pill--online {
-  color: var(--green);
-  border-color: rgba(48, 209, 88, 0.4);
-  background-color: var(--green-dim);
-}
-
-.conn-pill--offline {
-  color: var(--red);
-  border-color: rgba(255, 59, 48, 0.4);
-  background-color: var(--red-dim);
-}
-
-.ops-header__sync {
-  font-size: 0.72rem;
-  color: var(--muted);
 }
 
 .ops-header__right {
@@ -102,7 +64,7 @@
 }
 
 .ops-header__clock {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--text-2);
 }
 
@@ -112,19 +74,18 @@
   align-items: center;
   gap: 0.4rem;
   border: 1px solid var(--border-strong);
-  background-color: var(--surface-2);
+  background-color: var(--surface);
   color: var(--text);
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-size: 0.78rem;
+  font-weight: 500;
   padding: 0.42rem 0.8rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
 }
 
 .refresh-btn:hover:not(:disabled) {
-  border-color: var(--blue);
-  color: var(--blue);
+  border-color: var(--muted);
+  background-color: var(--surface-2);
 }
 
 .refresh-btn:disabled {

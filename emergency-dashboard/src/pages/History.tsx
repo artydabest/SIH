@@ -55,16 +55,16 @@ export default function History() {
         <p className="muted">Loading history…</p>
       ) : sorted.length === 0 ? (
         <div className="empty-state">
-          <h3>NO DETECTIONS</h3>
+          <h3>No detections</h3>
           <p>No detection events recorded for this filter.</p>
         </div>
       ) : (
         <div className="history-table panel">
           <div className="history-row history-row--head">
-            <span>TIME</span>
-            <span>DEVICE</span>
-            <span>LOCATION</span>
-            <span>STATUS</span>
+            <span>Time</span>
+            <span>Device</span>
+            <span>Location</span>
+            <span>Status</span>
           </div>
           {sorted.map((emergency) => (
             <div key={emergency._id} className="history-row">

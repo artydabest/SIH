@@ -31,7 +31,7 @@ export default function Dashboard() {
       <div className="dashboard-grid">
         <section className="panel" aria-label="Active incidents">
           <div className="panel__heading">
-            <h3 className="panel__title">ACTIVE INCIDENTS</h3>
+            <h3 className="panel__title">Active incidents</h3>
             <span className="panel__count mono">{active.length}</span>
           </div>
           <IncidentList
@@ -49,8 +49,8 @@ export default function Dashboard() {
         <div className="dashboard-grid__side">
           <section className="panel panel--map" aria-label="Live rescue map">
             <div className="panel__heading">
-              <h3 className="panel__title">LIVE RESCUE MAP</h3>
-              <span className="live-chip">● LIVE</span>
+              <h3 className="panel__title">Rescue map</h3>
+              <span className="live-chip">Auto-refreshing</span>
             </div>
             <RescueMap
               emergencies={emergencies}

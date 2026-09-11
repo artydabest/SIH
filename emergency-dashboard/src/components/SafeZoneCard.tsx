@@ -8,13 +8,13 @@ import "../styles/safe-zone.css";
 export default function SafeZoneCard() {
   return (
     <section className="safe-zone" aria-label="Nearest safe zone (demo)">
-      <h3 className="panel__title">NEAREST SAFE ZONE</h3>
+      <h3 className="panel__title">Nearest safe zone</h3>
       <div className="safe-zone__card">
         <p className="safe-zone__name">City Emergency Shelter</p>
         <p className="safe-zone__distance mono">650 m</p>
-        <span className="demo-chip">DEMO DATA</span>
+        <span className="demo-chip">Demo data</span>
         <button type="button" className="btn btn--primary" disabled>
-          NAVIGATE TO SAFETY
+          Navigate to safety
         </button>
         <p className="safe-zone__note">
           <TriangleAlert size={12} aria-hidden="true" /> Safe-zone routing is not

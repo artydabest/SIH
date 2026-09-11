@@ -36,7 +36,7 @@ export default function IncidentDetail({
   if (!emergency) {
     return (
       <div className="empty-state">
-        <h3>INCIDENT NOT FOUND</h3>
+        <h3>Incident not found</h3>
         <p>This incident may have been removed or the link is stale.</p>
         <Link className="btn btn--primary" to="/incidents">
           ← Back to incidents
@@ -57,7 +57,7 @@ export default function IncidentDetail({
 
       <header className="incident-detail__header">
         <div>
-          <p className="incident-detail__eyebrow">POSSIBLE PERSON IN DISTRESS</p>
+          <p className="incident-detail__eyebrow">Possible person in distress</p>
           <h2 className="mono">Device #{emergency.deviceId}</h2>
         </div>
         <div className="incident-detail__badges">
@@ -68,7 +68,7 @@ export default function IncidentDetail({
 
       <div className="incident-detail__grid">
         <section className="panel" aria-label="Incident facts">
-          <h3 className="panel__title">INCIDENT</h3>
+          <h3 className="panel__title">Incident</h3>
           <dl className="fact-grid">
             <div className="fact">
               <dt>Stationary</dt>
@@ -118,7 +118,7 @@ export default function IncidentDetail({
                 disabled={isUpdating}
                 onClick={() => onStatusUpdate(emergency._id, nextStatus)}
               >
-                {isUpdating ? "UPDATING…" : actionLabel}
+                {isUpdating ? "Updating…" : actionLabel}
               </button>
             ) : (
               <p className="resolved-note">Incident resolved — no active action required.</p>
@@ -127,7 +127,7 @@ export default function IncidentDetail({
         </section>
 
         <section className="panel panel--map" aria-label="Incident location">
-          <h3 className="panel__title">LAST KNOWN LOCATION</h3>
+          <h3 className="panel__title">Last known location</h3>
           <RescueMap
             emergencies={[emergency]}
             selectedId={emergency._id}

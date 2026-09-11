@@ -14,6 +14,9 @@ body{font-family:Arial,sans-serif;overflow:hidden}
 .roadname{position:absolute;color:#777;font-size:11px;transform:rotate(-90deg);white-space:nowrap}
 .marker{position:absolute;width:34px;height:34px;border-radius:50%;border:3px solid white;box-shadow:0 2px 6px #666;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;z-index:10}
 .user{background:#2878ff}.shelter{background:#e74c3c}.volunteer{background:#9b59f6}.unavailable{background:#777}
+.emergency{background:#e74c3c;animation:pulse 1.6s ease-out infinite}
+.emergency.resolved{background:#2e8b57;animation:none}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(231,76,60,.55)}70%{box-shadow:0 0 0 16px rgba(231,76,60,0)}100%{box-shadow:0 0 0 0 rgba(231,76,60,0)}}
 #popup{position:absolute;display:none;z-index:30;background:#fff;border-radius:10px;padding:12px;min-width:190px;max-width:250px;box-shadow:0 2px 12px #555;font-size:14px}
 button,.action{display:inline-block;border:0;border-radius:7px;padding:8px 11px;margin:7px 5px 0 0;background:#3478f6;color:white;font-weight:bold;text-decoration:none}
 #controls{position:absolute;right:10px;top:10px;z-index:40;display:flex;flex-direction:column;gap:5px}
@@ -48,7 +51,8 @@ button,.action{display:inline-block;border:0;border-radius:7px;padding:8px 11px;
     <span class="dot" style="background:#2878ff"></span>You<br>
     <span class="dot" style="background:#e74c3c"></span>Safe place<br>
     <span class="dot" style="background:#9b59f6"></span>Available volunteer<br>
-    <span class="dot" style="background:#777"></span>Unavailable
+    <span class="dot" style="background:#777"></span>Unavailable<br>
+    <span class="dot" style="background:#e74c3c"></span>Live SOS incident
   </div>
 </div>
 
@@ -170,6 +174,56 @@ document.getElementById("map").addEventListener("click",function(){
 });
 
 render();
+
+/* ─────────────────────────────────────────────
+   Live incidents from the shared disaster-relay
+   backend (same store the responder dashboard
+   uses). Pushed from Android via
+   window.loadIncidents(jsonArray).
+   ───────────────────────────────────────────── */
+var incidents=[];
+
+window.loadIncidents=function(data){
+ if(!Array.isArray(data))return;
+ incidents=data;
+ renderIncidents();
+};
+
+function incidentColor(s){
+ if(s==="RESOLVED")return "#2e8b57";
+ if(s==="RESPONDING")return "#2878ff";
+ if(s==="ACKNOWLEDGED")return "#e67e22";
+ return "#e74c3c";
+}
+
+function renderIncidents(){
+ var box=document.getElementById("markers");
+ // drop previous incident markers, keep user/shelter/volunteer markers
+ var old=box.querySelectorAll(".emergency");
+ for(var i=0;i<old.length;i++){old[i].remove();}
+ incidents.forEach(function(em){
+  if(em.latitude===0&&em.longitude===0)return; // reported without a fix
+  var q=xy(em.latitude,em.longitude);
+  var el=document.createElement("div");
+  var resolved=em.status==="RESOLVED";
+  el.className="marker emergency"+(resolved?" resolved":"");
+  el.style.left=q.x+"%"; el.style.top=q.y+"%";
+  el.textContent="!";
+  el.onclick=function(e){e.stopPropagation();showIncidentPopup(em,q.x,q.y)};
+  box.appendChild(el);
+ });
+}
+
+function showIncidentPopup(em,x,y){
+ var pop=document.getElementById("popup");
+ var d=distance(user.lat,user.lon,em.latitude,em.longitude).toFixed(2);
+ pop.innerHTML="<b>🚨 SOS — "+em.deviceId+"</b><br>Status: "+em.status+
+  "<br>"+d+" km away"+
+  (em.status!=="RESOLVED"?"<br><button onclick='navigateTo("+em.latitude+","+em.longitude+",\"SOS site\")'>Navigate</button>":"");
+ pop.style.display="block";
+ pop.style.left=Math.min(x+15,window.innerWidth-280)+"px";
+ pop.style.top=Math.min(y+15,window.innerHeight-150)+"px";
+}
 </script>
 
 <div id="volunteerPanel" style="position:absolute;right:10px;bottom:10px;z-index:45;background:white;border-radius:8px;padding:9px 11px;box-shadow:0 1px 6px #777;font-size:12px;line-height:20px">

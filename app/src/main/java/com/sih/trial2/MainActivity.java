@@ -22,6 +22,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -29,6 +31,8 @@ import android.webkit.WebViewClient;
 import android.content.Intent;
 import android.net.Uri;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity
        {
@@ -36,8 +40,18 @@ public class MainActivity extends AppCompatActivity
     private TextView locationText;
     private TextView safePlacesText;
     private TextView volunteersText;
+    private TextView incidentStatusText;
     private Button refreshButton;
+    private Button sosButton;
+    private WebView rescueMapWebView;
     private Volunteer nearestVolunteer;
+
+    /* Shared-backend sync: same store the responder dashboard polls. */
+    private static final long POLL_INTERVAL_MS = 7000;
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private final java.util.concurrent.ExecutorService networkExecutor =
+            java.util.concurrent.Executors.newSingleThreadExecutor();
+    private boolean incidentsPollRunning = false;
 
 
     private final List<SafePlace> safePlaces = new ArrayList<>();
@@ -52,7 +66,7 @@ public class MainActivity extends AppCompatActivity
         EdgeToEdge.enable(this);
 
         setContentView(R.layout.activity_main);
-        WebView rescueMapWebView = findViewById(R.id.rescueMapWebView);
+        rescueMapWebView = findViewById(R.id.rescueMapWebView);
 
         WebSettings webSettings = rescueMapWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -124,6 +138,12 @@ public class MainActivity extends AppCompatActivity
         locationHelper = new LocationHelper(this);
         loadDummyData();
 
+        incidentStatusText = findViewById(R.id.incidentStatusText);
+        sosButton = findViewById(R.id.sosButton);
+        sosButton.setOnClickListener(v -> onSosPressed());
+
+        startIncidentPolling();
+
         refreshButton.setOnClickListener(v -> getUserLocation());
         safePlacesText.setOnClickListener(v -> {
             if (!safePlaces.isEmpty()) {
@@ -141,6 +161,115 @@ public class MainActivity extends AppCompatActivity
         } else {
             locationHelper.requestLocationPermission();
         }
+    }
+
+    /* ───────── Shared-backend SOS + live incident feed ───────── */
+
+    private void onSosPressed() {
+        sosButton.setEnabled(false);
+        incidentStatusText.setText("Sending SOS…");
+        if (!locationHelper.hasLocationPermission()) {
+            locationHelper.requestLocationPermission();
+            sosButton.setEnabled(true);
+            incidentStatusText.setText("Grant location, then press SOS again.");
+            return;
+        }
+        locationHelper.getCurrentLocation(new LocationHelper.LocationCallback() {
+            @Override
+            public void onLocationReceived(@NonNull Location location) {
+                sendSos(location.getLatitude(), location.getLongitude());
+            }
+
+            @Override
+            public void onLocationError(@NonNull String message) {
+                // Send without coordinates rather than blocking a distress call.
+                sendSos(0, 0);
+            }
+        });
+    }
+
+    private void sendSos(double latitude, double longitude) {
+        networkExecutor.execute(() -> {
+            String deviceId = "PHONE-" + android.provider.Settings.Secure.getString(
+                    getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+            EmergencyApi.Incident stored =
+                    EmergencyApi.sendSos(deviceId, latitude, longitude);
+            runOnUiThread(() -> {
+                sosButton.setEnabled(true);
+                if (stored != null) {
+                    incidentStatusText.setText("SOS sent — visible on the responder dashboard now.");
+                    Toast.makeText(this, "SOS reported to responders", Toast.LENGTH_LONG).show();
+                    fetchIncidentsOnce();
+                } else {
+                    incidentStatusText.setText("Could not reach the backend — check connection and retry.");
+                    Toast.makeText(this, "Backend unreachable — SOS not sent", Toast.LENGTH_LONG).show();
+                }
+            });
+        });
+    }
+
+    private void startIncidentPolling() {
+        if (incidentsPollRunning) return;
+        incidentsPollRunning = true;
+        fetchIncidentsOnce();
+    }
+
+    private void fetchIncidentsOnce() {
+        if (isFinishing() || isDestroyed()) return;
+        networkExecutor.execute(() -> {
+            final List<EmergencyApi.Incident> incidents = EmergencyApi.getIncidents();
+            final String json = incidentsToJson(incidents);
+            runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed()) return;
+                updateIncidentStatus(incidents);
+                if (json != null && rescueMapWebView != null) {
+                    rescueMapWebView.evaluateJavascript(
+                            "window.loadIncidents(" + json + ")", null);
+                }
+                mainHandler.postDelayed(this::fetchIncidentsOnce, POLL_INTERVAL_MS);
+            });
+        });
+    }
+
+    private void updateIncidentStatus(List<EmergencyApi.Incident> incidents) {
+        int active = 0;
+        for (EmergencyApi.Incident i : incidents) {
+            if (!"RESOLVED".equals(i.status)) active++;
+        }
+        if (active > 0) {
+            incidentStatusText.setText(active + " live SOS" + (active == 1 ? "" : "es")
+                    + " on the shared network — shown on the map");
+        } else if (!incidents.isEmpty()) {
+            incidentStatusText.setText("Connected — no active SOS incidents.");
+        } else {
+            incidentStatusText.setText("Backend unreachable or no incidents yet.");
+        }
+    }
+
+    private String incidentsToJson(List<EmergencyApi.Incident> incidents) {
+        try {
+            JSONArray arr = new JSONArray();
+            for (EmergencyApi.Incident i : incidents) {
+                JSONObject o = new JSONObject();
+                o.put("_id", i.id);
+                o.put("deviceId", i.deviceId);
+                o.put("latitude", i.latitude);
+                o.put("longitude", i.longitude);
+                o.put("status", i.status);
+                arr.put(o);
+            }
+            return arr.toString();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        incidentsPollRunning = false;
+        mainHandler.removeCallbacksAndMessages(null);
+        networkExecutor.shutdownNow();
     }
 
     private void loadDummyData() {

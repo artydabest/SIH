@@ -4,6 +4,9 @@ export type EmergencyStatus =
   | "RESPONDING"
   | "RESOLVED";
 
+/** Backend-computed confidence classification (optional — not on older docs). */
+export type ConfidenceLevel = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+
 export interface Emergency {
   _id: string;
   deviceId: string;
@@ -13,6 +16,9 @@ export interface Emergency {
   stationaryMinutes: number;
   nearbyDevices: number;
   status: EmergencyStatus;
+  /** 0–100, computed by the backend when available. */
+  confidence?: number;
+  confidenceLevel?: ConfidenceLevel;
   createdAt: string;
   updatedAt: string;
 }
@@ -34,8 +40,8 @@ export const ACTION_LABEL: Record<EmergencyStatus, string | null> = {
 };
 
 export const STATUS_LABEL: Record<EmergencyStatus, string> = {
-  NEW: "NEW ALERT",
-  ACKNOWLEDGED: "ACKNOWLEDGED",
-  RESPONDING: "RESPONDING",
-  RESOLVED: "RESOLVED",
+  NEW: "New alert",
+  ACKNOWLEDGED: "Acknowledged",
+  RESPONDING: "Responding",
+  RESOLVED: "Resolved",
 };

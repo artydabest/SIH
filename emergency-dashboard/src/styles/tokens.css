@@ -1,36 +1,36 @@
 :root {
-  /* Surfaces */
-  --bg: #090a0c;
-  --surface: #111315;
-  --surface-2: #17191c;
-  --border: #262a2e;
-  --border-strong: #3a4046;
+  /* Surfaces — warm light greys */
+  --bg: #ececea;
+  --surface: #fafaf9;
+  --surface-2: #f1f1ef;
+  --border: #dededd;
+  --border-strong: #c6c6c3;
 
   /* Text */
-  --text: #f5f5f5;
-  --text-2: #a4a8ad;
-  --muted: #666b72;
+  --text: #2b2b28;
+  --text-2: #5c5c58;
+  --muted: #8a8a85;
 
-  /* Semantic */
-  --red: #ff3b30;
-  --red-dim: rgba(255, 59, 48, 0.12);
-  --orange: #ff9f0a;
-  --orange-dim: rgba(255, 159, 10, 0.12);
-  --blue: #0a84ff;
-  --blue-dim: rgba(10, 132, 255, 0.14);
-  --green: #30d158;
-  --green-dim: rgba(48, 209, 88, 0.12);
-  --yellow: #ffd60a;
+  /* Semantic — desaturated, print-like */
+  --red: #b3402e;
+  --red-dim: rgba(179, 64, 46, 0.09);
+  --orange: #9a6512;
+  --orange-dim: rgba(154, 101, 18, 0.1);
+  --blue: #3d6a8f;
+  --blue-dim: rgba(61, 106, 143, 0.1);
+  --green: #47714a;
+  --green-dim: rgba(71, 113, 74, 0.1);
+  --yellow: #8a6d1a;
 
   /* Type */
-  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   /* Shape */
   --radius: 6px;
   --radius-sm: 4px;
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 * {
@@ -55,7 +55,6 @@ body {
 .mono {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.01em;
 }
 
 /* Focus visibility for keyboard users */
@@ -69,12 +68,11 @@ body {
 .btn {
   appearance: none;
   border: 1px solid var(--border-strong);
-  background-color: var(--surface-2);
+  background-color: var(--surface);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+  font-weight: 500;
   padding: 0.5rem 0.95rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -85,7 +83,8 @@ body {
 }
 
 .btn:hover:not(:disabled) {
-  border-color: var(--blue);
+  border-color: var(--muted);
+  background-color: var(--surface-2);
 }
 
 .btn:disabled {
@@ -94,14 +93,14 @@ body {
 }
 
 .btn--primary {
-  background-color: var(--blue);
-  border-color: var(--blue);
-  color: #ffffff;
+  background-color: #34342f;
+  border-color: #34342f;
+  color: #fafaf9;
 }
 
 .btn--primary:hover:not(:disabled) {
-  background-color: #0870d8;
-  border-color: #0870d8;
+  background-color: #24241f;
+  border-color: #24241f;
 }
 
 .btn--danger {
@@ -111,12 +110,12 @@ body {
 }
 
 .btn--danger:hover:not(:disabled) {
-  background-color: #e23228;
-  border-color: #e23228;
+  background-color: #9c3827;
+  border-color: #9c3827;
 }
 
 .btn--lg {
-  font-size: 0.8rem;
+  font-size: 0.88rem;
   padding: 0.7rem 1.3rem;
 }
 
@@ -131,10 +130,9 @@ body {
 
 .panel__title {
   margin: 0;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-2);
 }
 
 .panel__heading {
@@ -154,14 +152,9 @@ body {
 }
 
 .live-chip {
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--green);
-}
-
-.live-chip::first-letter {
-  color: var(--green);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted);
 }
 
 .muted {
@@ -184,8 +177,8 @@ body {
 
 .empty-state h3 {
   margin: 0.3rem 0 0;
-  font-size: 0.95rem;
-  letter-spacing: 0.1em;
+  font-size: 0.98rem;
+  font-weight: 600;
   color: var(--text);
 }
 
@@ -205,15 +198,15 @@ body {
   gap: 1rem;
   margin: 0.9rem 1.25rem 0;
   padding: 0.85rem 1.1rem;
-  border: 1px solid rgba(255, 59, 48, 0.45);
-  background-color: rgba(255, 59, 48, 0.08);
+  border: 1px solid rgba(179, 64, 46, 0.35);
+  background-color: var(--red-dim);
   border-radius: var(--radius);
 }
 
 .offline-banner strong {
   display: block;
-  font-size: 0.78rem;
-  letter-spacing: 0.1em;
+  font-size: 0.84rem;
+  font-weight: 600;
   color: var(--red);
 }
 
@@ -226,12 +219,11 @@ body {
 /* Demo data chip */
 .demo-chip {
   display: inline-block;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  font-weight: 500;
   color: var(--yellow);
-  border: 1px solid rgba(255, 214, 10, 0.45);
-  background-color: rgba(255, 214, 10, 0.08);
+  border: 1px solid rgba(138, 109, 26, 0.4);
+  background-color: rgba(138, 109, 26, 0.08);
   border-radius: 3px;
   padding: 0.12rem 0.45rem;
 }
@@ -239,14 +231,12 @@ body {
 .demo-note {
   grid-column: 1 / -1;
   margin: 0;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-size: 0.78rem;
   color: var(--yellow);
-  border: 1px dashed rgba(255, 214, 10, 0.4);
+  border: 1px dashed rgba(138, 109, 26, 0.4);
   border-radius: var(--radius-sm);
   padding: 0.45rem 0.7rem;
-  background-color: rgba(255, 214, 10, 0.05);
+  background-color: rgba(138, 109, 26, 0.05);
 }
 
 /* Reduced motion */

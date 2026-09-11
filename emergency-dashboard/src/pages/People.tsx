@@ -14,7 +14,7 @@ export default function People() {
       </div>
       <div className="empty-state">
         <Users size={30} strokeWidth={1.6} aria-hidden="true" />
-        <h3>NOT YET AVAILABLE</h3>
+        <h3>Not yet available</h3>
         <p>
           Safety Circle requires people-status APIs that the backend does not
           provide yet. This section will activate when the feature ships.

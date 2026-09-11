@@ -6,9 +6,9 @@
 
 .page__heading h2 {
   margin: 0;
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-size: 1.15rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
 }
 
 .page__sub {
@@ -81,13 +81,13 @@
 
 .filter-chip:hover {
   color: var(--text);
-  border-color: var(--blue);
+  border-color: var(--muted);
 }
 
 .filter-chip--active {
-  background-color: var(--blue-dim);
-  border-color: var(--blue);
-  color: var(--blue);
+  background-color: #34342f;
+  border-color: #34342f;
+  color: #fafaf9;
 }
 
 /* History */
@@ -112,9 +112,8 @@
 }
 
 .history-row--head {
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: 0.7rem;
+  font-weight: 600;
   color: var(--muted);
 }
 

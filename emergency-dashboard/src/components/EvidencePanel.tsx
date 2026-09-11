@@ -15,7 +15,7 @@ interface EvidencePanelProps {
 export default function EvidencePanel({ emergency }: EvidencePanelProps) {
   return (
     <section className="evidence" aria-label="Detection evidence">
-      <h3 className="evidence__title">WHY THIS ALERT?</h3>
+      <h3 className="evidence__title">Why this alert</h3>
       <ul className="evidence__list">
         <li>
           <Check size={14} aria-hidden="true" className="evidence__check" />

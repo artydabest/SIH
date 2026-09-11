@@ -49,7 +49,7 @@ export default function IncidentList({
     return (
       <div className="empty-state">
         <ShieldCheck size={30} strokeWidth={1.6} aria-hidden="true" />
-        <h3>ALL CLEAR</h3>
+        <h3>All clear</h3>
         <p>No active incidents detected.</p>
         <p className="empty-state__sub">
           The responder network is currently quiet.
@@ -62,7 +62,7 @@ export default function IncidentList({
     <div className={`incident-list ${demoMode ? "incident-list--demo" : ""}`}>
       {demoMode && (
         <p className="demo-note">
-          DEMO DATA — backend unreachable. Showing simulated incidents.
+          Demo data — backend unreachable. Showing simulated incidents.
         </p>
       )}
       {emergencies.map((emergency) => (

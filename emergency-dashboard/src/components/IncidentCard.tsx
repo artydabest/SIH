@@ -84,7 +84,7 @@ export default function IncidentCard({
             disabled={isUpdating}
             onClick={() => onStatusUpdate(emergency._id, nextStatus)}
           >
-            {isUpdating ? "UPDATING…" : actionLabel}
+            {isUpdating ? "Updating…" : actionLabel}
           </button>
         ) : (
           <span className="incident-card__done">Incident resolved — no action required</span>
@@ -94,7 +94,7 @@ export default function IncidentCard({
           to={`/incidents/${emergency._id}`}
           aria-label={`View details for device ${emergency.deviceId}`}
         >
-          VIEW INCIDENT <ArrowRight size={13} aria-hidden="true" />
+          View incident <ArrowRight size={13} aria-hidden="true" />
         </Link>
       </footer>
     </article>

@@ -66,7 +66,7 @@ export default function Incidents() {
         />
         <section className="panel panel--map" aria-label="Incident map">
           <div className="panel__heading">
-            <h3 className="panel__title">RESCUE MAP</h3>
+            <h3 className="panel__title">Rescue map</h3>
           </div>
           <RescueMap
             emergencies={filtered}
