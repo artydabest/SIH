@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F6F7FB">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nearby Emergency Detection"
+            android:textSize="27sp"
+            android:textStyle="bold"
+            android:textColor="#171923"
+            android:gravity="center"
+            android:paddingTop="12dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Disaster Rescue • Device Relay"
+            android:textSize="14sp"
+            android:textColor="#777B89"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:paddingBottom="20dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="#FFF0F0">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="⚠ EMERGENCY RELAY"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#B71C1C"/>
+
+            <TextView
+                android:id="@+id/eventText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Emergency Event: Waiting..."
+                android:textSize="14sp"
+                android:textColor="#555555"
+                android:paddingTop="8dp"/>
+
+            <TextView
+                android:id="@+id/countText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Independent emergency reports: 0 / 4"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:paddingTop="5dp"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/simulateButton"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:text="SIMULATE NEARBY DEVICES"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#5B4BDB"/>
+
+        <Button
+            android:id="@+id/resetButton"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="10dp"
+            android:text="RESET SIMULATION"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#5B4BDB"
+            android:backgroundTint="#EDEAFF"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nearby Devices"
+            android:textSize="21sp"
+            android:textStyle="bold"
+            android:textColor="#171923"
+            android:paddingTop="28dp"
+            android:paddingBottom="14dp"/>
+
+        <LinearLayout
+            android:id="@+id/reportsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+    </LinearLayout>
+
+</ScrollView>
