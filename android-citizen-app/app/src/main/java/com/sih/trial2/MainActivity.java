@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     private ApiClient apiClient;
     private MovementTracker movementTracker;
     private AppSettings settings;
+    /** Live Socket.IO link; warnings/safety push instead of waiting for the poll. */
+    private WarningSocketClient socketClient;
 
     // --- Views (Home tab) ---
     private TextView locationText;
@@ -151,6 +153,8 @@ public class MainActivity extends AppCompatActivity {
         apiClient = new ApiClient(settings.getBaseUrl(), settings.getApiKey());
         locationHelper = new LocationHelper(this);
         movementTracker = new MovementTracker();
+        socketClient = new WarningSocketClient();
+        connectLiveLink();
 
         if (deviceIdText != null) {
             deviceIdText.setText(DEVICE_ID);
@@ -276,6 +280,39 @@ public class MainActivity extends AppCompatActivity {
                 applyMapData();
             });
         }
+    }
+
+    /**
+     * Live Socket.IO link: warning and safety pushes trigger the same refresh
+     * paths as the poll timers, so updates land in under a second. Polling
+     * continues as the fallback for dropped connections.
+     */
+    private void connectLiveLink() {
+        if (socketClient == null) return;
+        socketClient.connect(settings.getBaseUrl(), new WarningSocketClient.Listener() {
+            @Override
+            public void onWarningsChanged() {
+                apiClient.getWarnings(new ApiClient.WarningsCallback() {
+                    @Override
+                    public void onSuccess(List<Warning> fresh) {
+                        warnings.clear();
+                        warnings.addAll(fresh);
+                        notifyNewWarnings();
+                        renderWarnings();
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        // Poll timer will pick it up.
+                    }
+                });
+            }
+
+            @Override
+            public void onSafetyChanged() {
+                refreshCircle();
+            }
+        });
     }
 
     /**
@@ -1013,9 +1050,10 @@ public class MainActivity extends AppCompatActivity {
         sosStatusText.setText("Reporting emergency to backend…");
 
         long stationaryMinutes = Math.max(1, movementTracker.getStationaryMinutes());
+        int nearbyDevices = NearbyDevicesProvider.getNearbyDeviceCount(this);
 
         apiClient.postEmergency(DEVICE_ID, lastLatitude, lastLongitude, lastAltitude,
-                stationaryMinutes, 0, true,
+                stationaryMinutes, nearbyDevices, true,
                 new ApiClient.ApiCallback() {
                     @Override
                     public void onSuccess(String responseBody) {
@@ -1389,16 +1427,22 @@ public class MainActivity extends AppCompatActivity {
 
     // MapView lifecycle passthrough
     @Override
-    protected void onStart() { super.onStart(); mapView.onStart(); }
+    protected void onStart() {
+        super.onStart();
+        mapView.onStart();
+        if (socketClient != null && settings != null) {
+            connectLiveLink();
+        }
+    }
 
     @Override
-    protected void onResume() { super.onResume(); mapView.onResume(); }
-
-    @Override
-    protected void onPause() { super.onPause(); mapView.onPause(); }
-
-    @Override
-    protected void onStop() { super.onStop(); mapView.onStop(); }
+    protected void onStop() {
+        super.onStop();
+        mapView.onStop();
+        if (socketClient != null) {
+            socketClient.disconnect();
+        }
+    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -1414,5 +1458,8 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         alertTimer.cancel();
         mapView.onDestroy();
+        if (socketClient != null) {
+            socketClient.disconnect();
+        }
     }
 }

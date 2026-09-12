@@ -18,7 +18,7 @@ This document is deliberately honest: it exists so the project can be defended, 
 
 ### W2. BLE relay claim must not be overstated
 
-- **WEAKNESS:** There is no working BLE mesh in the codebase. `nearbyDevices` is currently user-reported (the Android app sends `0`).
+- **WEAKNESS:** There is no working BLE mesh in the codebase. `nearbyDevices` is now *measured* (Wi-Fi scan proxy: distinct locally-administered-BSSID hotspots), but it still only sees hotspot-style devices — phones with Wi-Fi off are invisible. Do not present it as device counting or a mesh.
 - **WHY IT MATTERS:** Claiming offline resilience that doesn't exist is the fastest way to lose credibility.
 - **CURRENT ASSUMPTION:** Internet + GPS work.
 - **IMPROVEMENT:** Present BLE relay as designed future scope. Do not demo it.
@@ -53,7 +53,7 @@ This document is deliberately honest: it exists so the project can be defended, 
 
 ### W6. Alert fatigue is only partially solved
 
-- **WEAKNESS:** Relevance filtering exists (DIRECT / NEARBY / INFORMATIONAL + once-per-warning popups), but poll-based delivery can still stack notifications across regions during a multi-region event.
+- **WEAKNESS:** Relevance filtering exists (DIRECT / NEARBY / INFORMATIONAL + once-per-warning popups). Delivery is now hybrid: Socket.IO push (sub-second) with the 8 s poll retained as fallback; notifications can still stack across regions during a multi-region event.
 - **IMPROVEMENT:** Per-severity notification rules (already: only HIGH/CRITICAL DIRECT warnings get dialogs) — good; keep quiet for the rest.
 
 ### W7. Indoor / GPS-accuracy failure
@@ -118,7 +118,7 @@ The real additions: (1) location relevance — only warn people in the affected 
 - Demo seeding of plausible regional warnings
 
 **REMOVE / FUTURE SCOPE:**
-- BLE device counting (future scope; `nearbyDevices` stays user-reported)
+- BLE device counting (future scope; `nearbyDevices` uses a Wi-Fi-scan proxy, not BLE)
 - Any claim of routing around hazards
 
 ## 24. Final Product Test — walkthrough status
@@ -132,7 +132,7 @@ warning issued via simulator API → stored with instructions → plausibility g
 |---|----------|-------------|----------------------------------|
 | 1 | No auth; anyone can POST emergencies/warnings | ~~HIGH~~ → MEDIUM | **Addressed:** writes now require `X-API-Key` + rate limiting (reads stay open). Production still needs device attestation + an authenticated warning authority |
 | 2 | Confidence weights are unvalidated heuristics | HIGH | Present as transparent, tunable triage ranking; components visible to responders |
-| 3 | BLE/`nearbyDevices` is user-reported, not measured | HIGH | DO NOT CLAIM mesh; future scope |
+| 3 | `nearbyDevices` is a Wi-Fi-scan proxy, not BLE mesh | MEDIUM | DO NOT CLAIM mesh; say "nearby-device signal" |
 | 4 | Shelter data is simulated, no owner | MEDIUM | Labeled everywhere; `lastVerifiedAt` is the hook for real verification workflows |
 | 5 | Passive detection false positives (sleep ≠ emergency) | MEDIUM | SOS outranks passive; score = review priority, not diagnosis |
 | 6 | No safe-route awareness during evacuation advice | MEDIUM | Advisory only, reasons shown; stay-put default for travel-dangerous disasters |

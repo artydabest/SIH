@@ -34,6 +34,10 @@ android {
 dependencies {
     implementation(libs.maplibre.sdk)
     implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("io.socket:socket.io-client:2.1.1") {
+        // socket.io-client ships an older org.json; Android provides one.
+        exclude(group = "org.json", module = "json")
+    }
     implementation(libs.activity.ktx)
     implementation(libs.appcompat)
     implementation(libs.constraintlayout)

@@ -391,15 +391,27 @@ public class ApiClient {
                 w.getDouble("latitude"),
                 w.getDouble("longitude"),
                 w.optDouble("radiusKm", 25),
-                w.optLong("issuedAt"),
-                w.optLong("expectedStartAt"),
-                w.optLong("expectedEndAt"),
+                isoToMillis(w.optString("issuedAt", "")),
+                isoToMillis(w.optString("expectedStartAt", "")),
+                isoToMillis(w.optString("expectedEndAt", "")),
                 stringList(instr, "immediate"),
                 stringList(instr, "avoid"),
                 stringList(instr, "prepare"),
                 w.optString("status", "ACTIVE"),
                 w.optBoolean("active", true)
         );
+    }
+
+    /** The backend serializes dates as ISO-8601 strings; optLong would silently yield 0. */
+    private static long isoToMillis(String raw) {
+        if (raw == null || raw.isEmpty()) {
+            return 0L;
+        }
+        try {
+            return java.time.Instant.parse(raw).toEpochMilli();
+        } catch (Exception e) {
+            return 0L;
+        }
     }
 
     private static List<String> stringList(JSONObject parent, String key) {
