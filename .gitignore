@@ -1,0 +1,25 @@
+# Gradle
+.gradle/
+build/
+app/build/
+
+# Android / IntelliJ
+local.properties
+.idea/
+*.iml
+.cxx/
+captures/
+
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Env & secrets
+.env
+.env.*
+!.env.template
+
+# Logs & OS junk
+*.log
+.DS_Store

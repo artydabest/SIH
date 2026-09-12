@@ -1,0 +1,63 @@
+/* Per-page component styles. Shared scaffolding lives in layout.css. */
+
+/* Disaster drill grid (Settings) */
+.drill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.5rem;
+}
+
+/* People page */
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.85rem;
+}
+
+.person-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  border-left: 3px solid var(--green);
+}
+
+.person-card--unsafe {
+  border-left-color: var(--red);
+}
+
+.person-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.person-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border-radius: 3px;
+  padding: 0.12rem 0.45rem;
+}
+
+.person-chip--safe {
+  color: var(--green);
+  background-color: var(--green-dim);
+}
+
+.person-chip--unsafe {
+  color: var(--red);
+  background-color: var(--red-dim);
+}
+
+.person-card__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0;
+  font-size: 0.68rem;
+  color: var(--muted);
+}

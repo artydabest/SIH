@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Brand -->
+    <color name="brand_primary">#1565C0</color>
+    <color name="brand_primary_dark">#0D47A1</color>
+
+    <!-- Semantic status colors (light palette, WCAG-conscious on white) -->
+    <color name="danger">#C62828</color>
+    <color name="danger_dark">#A91F1F</color>
+    <color name="safe_green">#2E7D32</color>
+    <color name="warning_orange">#E65100</color>
+
+    <!-- Surfaces & text -->
+    <color name="background">#F4F6F8</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="card_stroke">#DDE3E9</color>
+    <color name="text_primary">#1B2733</color>
+    <color name="text_secondary">#5F6B76</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_on_danger_soft">#FFCDD2</color>
+
+    <!-- Warning severity -->
+    <color name="sev_low">#2E7D32</color>
+    <color name="sev_medium">#F9A825</color>
+    <color name="sev_high">#E65100</color>
+    <color name="sev_critical">#C62828</color>
+    <color name="sev_low_dim">#142E7D32</color>
+    <color name="sev_medium_dim">#14F9A825</color>
+    <color name="sev_high_dim">#14E65100</color>
+    <color name="sev_critical_dim">#14C62828</color>
+
+    <!-- Navigation / misc -->
+    <color name="nav_inactive">#8A94A0</color>
+    <color name="unknown_gray">#8A94A0</color>
+    <color name="sev_stripe_low">#2E7D32</color>
+    <color name="sev_stripe_medium">#F9A825</color>
+    <color name="sev_stripe_high">#E65100</color>
+    <color name="sev_stripe_critical">#C62828</color>
+</resources>

@@ -1,0 +1,52 @@
+.alert-banner {
+  margin: 0.9rem 1.25rem 0;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid rgba(217, 48, 40, 0.55);
+  background-color: rgba(217, 48, 40, 0.1);
+  border-left: 4px solid var(--red);
+  border-radius: var(--radius);
+  animation: alert-slide 0.3s ease-out;
+}
+
+@keyframes alert-slide {
+  from {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.alert-banner__head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  color: var(--red);
+}
+
+.alert-banner__head strong {
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+}
+
+.alert-banner__msg {
+  font-size: 0.8rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.alert-banner__instructions {
+  margin: 0.55rem 0 0;
+  padding-left: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.alert-banner__instructions li {
+  font-size: 0.78rem;
+  color: var(--text-2);
+}

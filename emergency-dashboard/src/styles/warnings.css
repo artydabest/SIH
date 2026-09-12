@@ -1,0 +1,79 @@
+/* Active simulated warnings panel (dashboard/map pages) */
+
+.warnings-panel {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  min-width: 0;
+}
+
+.warnings-panel__empty {
+  margin: 0.4rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.demo-chip-inline {
+  display: inline-block;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--yellow);
+  border: 1px solid rgba(160, 90, 0, 0.45);
+  background-color: rgba(160, 90, 0, 0.08);
+  border-radius: 3px;
+  padding: 0.12rem 0.45rem;
+}
+
+.warnings-panel__timing {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+  font-size: 0.68rem;
+  color: var(--text-2);
+}
+
+.warnings-panel__actions {
+  list-style: none;
+  margin: 0.55rem 0 0;
+  padding: 0.55rem 0 0;
+  border-top: 1px dashed var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.warnings-panel__actions li {
+  font-size: 0.72rem;
+  color: var(--text-2);
+}
+
+.warnings-panel__actions li::before {
+  content: "•";
+  margin-right: 0.4rem;
+  color: var(--muted);
+}
+
+.sim-warning__icon {
+  color: inherit;
+  flex-shrink: 0;
+}
+
+/* Strongest treatment reserved for CRITICAL only */
+.sim-warning--critical-urgency {
+  background-color: rgba(217, 48, 40, 0.05);
+}
+
+.sim-warning--critical-urgency .sim-warning__head {
+  color: var(--red);
+}
+
+@media (max-width: 700px) {
+  .warnings-panel__timing {
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+}

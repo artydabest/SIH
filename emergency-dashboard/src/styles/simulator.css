@@ -1,0 +1,299 @@
+/* Meteorological Alert Simulator */
+
+.simulator-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+/* Form */
+.sim-field {
+  display: block;
+  margin-bottom: 0.9rem;
+}
+
+.sim-field__label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.3rem;
+}
+
+.sim-field__hint {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.sim-field select,
+.sim-field textarea {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: var(--text);
+  background-color: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.55rem;
+}
+
+.sim-field textarea {
+  resize: vertical;
+}
+
+.sim-field select:focus,
+.sim-field textarea:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 1px;
+}
+
+.sim-field-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+}
+
+/* Severity selector */
+.sim-severity-row {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.sim-severity {
+  flex: 1;
+  appearance: none;
+  border: 1px solid var(--border-strong);
+  background-color: var(--surface);
+  color: var(--text-2);
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.45rem 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.sim-severity:hover {
+  color: var(--text);
+}
+
+.sim-severity--selected.sim-severity--low {
+  border-color: var(--green);
+  background-color: var(--green-dim);
+  color: var(--green);
+}
+
+.sim-severity--selected.sim-severity--medium {
+  border-color: var(--yellow);
+  background-color: rgba(160, 90, 0, 0.1);
+  color: var(--yellow);
+}
+
+.sim-severity--selected.sim-severity--high {
+  border-color: var(--orange);
+  background-color: var(--orange-dim);
+  color: var(--orange);
+}
+
+.sim-severity--selected.sim-severity--critical {
+  border-color: var(--red);
+  background-color: var(--red-dim);
+  color: var(--red);
+}
+
+/* Send row */
+.sim-send-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-top: 1.1rem;
+}
+
+.sim-lead {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  color: var(--text-2);
+}
+
+.sim-result {
+  margin: 0.8rem 0 0;
+  font-size: 0.78rem;
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.75rem;
+}
+
+.sim-result--ok {
+  color: var(--green);
+  background-color: var(--green-dim);
+  border: 1px solid rgba(24, 128, 56, 0.4);
+}
+
+.sim-result--error {
+  color: var(--red);
+  background-color: var(--red-dim);
+  border: 1px solid rgba(217, 48, 40, 0.4);
+}
+
+/* Issued warning rows */
+.sim-warning {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background-color: var(--surface);
+  padding: 0.7rem 0.85rem;
+  margin-bottom: 0.6rem;
+}
+
+.sim-warning--low {
+  border-left-color: var(--green);
+}
+
+.sim-warning--medium {
+  border-left-color: var(--yellow);
+}
+
+.sim-warning--high {
+  border-left-color: var(--orange);
+}
+
+.sim-warning--critical {
+  border-left-color: var(--red);
+}
+
+.sim-warning__head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.sim-warning__title {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.82rem;
+}
+
+.sim-warning__withdraw {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid var(--border-strong);
+  background: none;
+  color: var(--text-2);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.sim-warning__withdraw:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.sim-warning__desc {
+  margin: 0.45rem 0 0;
+  font-size: 0.76rem;
+  color: var(--text-2);
+}
+
+.sim-warning__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+  font-size: 0.62rem;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+
+.sim-sev-chip {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.14rem 0.45rem;
+  border-radius: 3px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.sim-sev-chip--low {
+  color: var(--green);
+  border-color: rgba(24, 128, 56, 0.45);
+  background-color: var(--green-dim);
+}
+
+.sim-sev-chip--medium {
+  color: var(--yellow);
+  border-color: rgba(160, 90, 0, 0.45);
+  background-color: rgba(160, 90, 0, 0.1);
+}
+
+.sim-sev-chip--high {
+  color: var(--orange);
+  border-color: rgba(176, 96, 0, 0.5);
+  background-color: var(--orange-dim);
+}
+
+.sim-sev-chip--critical {
+  color: var(--red);
+  border-color: rgba(217, 48, 40, 0.5);
+  background-color: var(--red-dim);
+}
+
+/* History section */
+.sim-past {
+  margin-top: 0.9rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.7rem;
+}
+
+.sim-past__title {
+  margin: 0 0 0.45rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.sim-past__row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  font-size: 0.68rem;
+  color: var(--text-2);
+}
+
+.sim-past__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sim-past__state {
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  font-size: 0.6rem;
+}
+
+@media (max-width: 1100px) {
+  .simulator-grid {
+    grid-template-columns: 1fr;
+  }
+}

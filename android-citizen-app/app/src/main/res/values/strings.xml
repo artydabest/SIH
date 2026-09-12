@@ -1,0 +1,79 @@
+<resources>
+    <string name="app_name">Disaster Rescue</string>
+    <string name="tagline">Live map · safe spots · volunteers · friends</string>
+
+    <string name="settings">Settings</string>
+    <string name="loading">Loading…</string>
+
+    <string name="alert_title_placeholder">DISASTER ALERT</string>
+    <string name="what_you_should_do">WHAT YOU SHOULD DO</string>
+
+    <!-- Shelter guidance -->
+    <string name="section_shelter_guidance">SHELTER GUIDANCE</string>
+    <string name="shelter_guidance_loading">Checking whether you should move to a shelter…</string>
+    <string name="shelter_guidance_evacuate">Move to the recommended shelter now</string>
+    <string name="shelter_guidance_stay_put">Stay where you are and monitor updates</string>
+    <string name="shelter_guidance_no_action">No action needed right now</string>
+    <string name="shelter_guidance_simulated_note">Occupancy figures are simulated demo data.</string>
+
+    <string name="section_emergency">EMERGENCY</string>
+    <string name="sos_action">SOS — Report Emergency</string>
+    <string name="sos_hint">Press SOS to alert responders with your location.</string>
+
+    <string name="section_safety">MY SAFETY STATUS</string>
+    <string name="safe_toggle_on">I am SAFE</string>
+    <string name="safe_toggle_off">I NEED HELP</string>
+    <string name="checkin_hint">Check-ins share your location so friends see you.</string>
+
+    <string name="section_location">YOUR LOCATION</string>
+    <string name="location_loading">Getting your GPS location…</string>
+    <string name="refresh_action">Refresh Location &amp; Data</string>
+
+    <string name="section_safe_spots">NEAREST SAFE SPOTS — tap for directions</string>
+    <string name="section_volunteers">NEARBY VOLUNTEERS — tap to call</string>
+    <string name="section_friends">FRIENDS — live status</string>
+
+    <string name="location_needed_safe_spots">Location needed for safe spots.</string>
+    <string name="location_needed_volunteers">Location needed for volunteers.</string>
+    <string name="location_needed_friends">Location needed for friend check-ins.</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_alerts">Alerts</string>
+    <string name="nav_safe_places">Safe Places</string>
+    <string name="nav_map">Map</string>
+    <string name="nav_safe_circle">Safe Circle</string>
+
+    <!-- Simulated warnings -->
+    <string name="warnings_section_title">ACTIVE WARNINGS — SIMULATED</string>
+    <string name="warnings_demo_disclaimer">Simulated meteorological warnings for demo purposes only — not real government data.</string>
+    <string name="warning_expected_in">Expected in</string>
+    <string name="warning_in_progress">IN PROGRESS</string>
+    <string name="warning_relevance_direct">YOU ARE IN THIS AREA</string>
+    <string name="warning_relevance_nearby">NEAR YOUR AREA</string>
+    <string name="warning_relevance_info">OTHER REGIONS</string>
+    <string name="warning_no_relevant">No warnings for your area. Warnings for other regions appear under Alerts.</string>
+
+    <!-- Im safe -->
+    <string name="im_safe_action">I am SAFE</string>
+    <string name="im_safe_hint">Tap to tell your Safe Circle you are safe.</string>
+    <string name="im_safe_done">Marked safe - your Safe Circle can see your status.</string>
+
+    <!-- Safe circle -->
+    <string name="circle_add_title">Add to Safe Circle</string>
+    <string name="circle_add_hint">Friends device ID (shown in their app under Profile)</string>
+    <string name="circle_add_name_hint">Friends display name (optional)</string>
+    <string name="circle_add_action">Add Friend</string>
+    <string name="circle_empty">No friends in your Safe Circle yet. Add a friend by their device ID.</string>
+    <string name="circle_device_id_label">YOUR DEVICE ID (share with friends)</string>
+    <string name="circle_remove">Remove</string>
+    <string name="circle_status_safe">SAFE</string>
+    <string name="circle_status_unknown">UNKNOWN</string>
+    <string name="circle_status_emergency">POSSIBLE EMERGENCY</string>
+
+    <!-- Alerts tab -->
+    <string name="alerts_tab_title">WARNING HISTORY</string>
+    <string name="alerts_active_section">ACTIVE</string>
+    <string name="alerts_past_section">PAST (EXPIRED / WITHDRAWN)</string>
+    <string name="alerts_empty">No warnings recorded yet.</string>
+</resources>
