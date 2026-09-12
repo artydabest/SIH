@@ -55,6 +55,31 @@ Score → level: `0–39 LOW · 40–69 MEDIUM · 70–89 HIGH · 90–100 CRITI
 Confidence = evidence strength (LOW green → CRITICAL red); it is deliberately
 visually distinct from responder status.
 
+## Team quick start (TL;DR)
+
+```bash
+# 1. Backend — terminal 1
+cd disaster-relay && npm install
+cp .env.template .env        # then put your MongoDB URI in it
+npm start                    # listens on :3000, seeds demo data on first boot
+
+# 2. Dashboard — terminal 2
+cd emergency-dashboard && npm install
+npm run dev                  # open http://localhost:5173
+
+# 3. Citizen app — Android Studio
+#    Open android-citizen-app/ and press Run.
+#    IMPORTANT: fix android-citizen-app/local.properties to YOUR SDK path first.
+#    On an emulator, also run once per emulator boot:
+adb reverse tcp:3000 tcp:3000
+```
+
+Health check: `curl http://localhost:3000/api/health` → `{"status":"ok"}`.
+
+> Note: `local.properties`, `.env`, and all build output are git-ignored — every
+> teammate creates their own from the template (or Android Studio regenerates
+> `local.properties` automatically).
+
 ## Setup
 
 ### Backend
